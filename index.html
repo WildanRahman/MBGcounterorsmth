@@ -7,20 +7,23 @@
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0c0c0c;
-    --card: #111;
-    --border: #222;
-    --border2: #2a2a2a;
-    --red: #e03535;
-    --red-glow: rgba(224,53,53,0.4);
-    --red-dim: #6e1a1a;
-    --green: #27c55e;
-    --gold: #f0a500;
-    --text: #c8c8c8;
-    --muted: #555;
-    --mono: 'Share Tech Mono', monospace;
-    --display: 'Bebas Neue', cursive;
-    --body: 'Rajdhani', sans-serif;
+    --bg:       #0b0b0b;
+    --card:     #141414;
+    --card2:    #181818;
+    --border:   #252525;
+    --border2:  #2e2e2e;
+    --red:      #e03535;
+    --red-glow: rgba(224,53,53,0.45);
+    --red-dim:  #5c1515;
+    --orange:   #e07a35;
+    --green:    #27c55e;
+    --gold:     #f0a500;
+    --text:     #c8c8c8;
+    --text2:    #8a8a8a;
+    --muted:    #505050;
+    --mono:     'Share Tech Mono', monospace;
+    --display:  'Bebas Neue', cursive;
+    --body:     'Rajdhani', sans-serif;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body {
@@ -28,452 +31,615 @@
     color: var(--text);
     font-family: var(--body);
     min-height: 100vh;
-    overflow-x: hidden;
   }
+  /* CRT scanlines */
   body::after {
-    content:'';
-    position:fixed; inset:0;
-    background: repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.04) 3px,rgba(0,0,0,0.04) 4px);
+    content:''; position:fixed; inset:0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.045) 3px, rgba(0,0,0,0.045) 4px);
     pointer-events:none; z-index:9999;
   }
 
-  /* TOP BAR */
-  .top-bar {
+  /* ─── TOP TICKER ─── */
+  .ticker-bar {
     background: var(--red);
-    text-align:center;
-    padding: 8px 16px;
+    padding: 7px 0;
     font-family: var(--mono);
     font-size: 10px;
     letter-spacing: 3px;
     color: #fff;
-    line-height: 1.6;
+    text-align: center;
+    line-height: 1.7;
   }
 
-  /* HEADER */
+  /* ─── HEADER ─── */
   header {
     text-align: center;
-    padding: 52px 20px 36px;
-    border-bottom: 1px solid var(--border);
+    padding: 48px 20px 32px;
   }
-  .header-title {
+  .h-title {
     font-family: var(--display);
-    font-size: clamp(30px, 6vw, 58px);
-    letter-spacing: 10px;
+    font-size: clamp(28px, 5.5vw, 56px);
+    letter-spacing: 12px;
     color: #fff;
-    text-shadow: 0 0 30px rgba(255,255,255,0.1);
   }
-  .header-title span { color: var(--red); }
-  .header-sub {
+  .h-title em { color: var(--red); font-style: normal; }
+  .h-sub {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 10px;
     color: var(--muted);
-    margin-top: 10px;
-    letter-spacing: 1px;
+    letter-spacing: 3px;
+    margin-top: 8px;
     font-style: italic;
   }
-  .badge-row {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-top: 18px;
-    flex-wrap: wrap;
+  .h-badges {
+    display: flex; justify-content: center; gap: 10px;
+    margin-top: 18px; flex-wrap: wrap;
+  }
+  .badge {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 2px; padding: 5px 14px;
   }
   .badge-live {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    background: rgba(224,53,53,0.12);
+    display:flex; align-items:center; gap:7px;
+    background: rgba(224,53,53,0.1);
     border: 1px solid var(--red-dim);
     color: var(--red);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 5px 14px;
   }
   .live-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--red);
-    box-shadow: 0 0 6px var(--red);
-    animation: pulse-dot 1.4s ease-in-out infinite;
+    width:7px; height:7px; border-radius:50%;
+    background:var(--red); box-shadow:0 0 6px var(--red);
+    animation: ldot 1.4s ease-in-out infinite;
   }
-  @keyframes pulse-dot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.7)} }
-
+  @keyframes ldot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.65)} }
   .badge-fase {
-    background: #1a1a1a;
-    border: 1px solid var(--border2);
-    color: var(--text);
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 2px;
-    padding: 5px 14px;
+    background:#1c1c1c; border:1px solid var(--border2); color:var(--text2);
   }
 
-  /* MAIN SECTION */
-  .main-section {
-    max-width: 760px;
+  /* ─── CONTAINER ─── */
+  .wrap {
+    max-width: 820px;
     margin: 0 auto;
-    padding: 56px 24px 40px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
+    padding: 0 20px 60px;
+    display: flex; flex-direction: column; gap: 16px;
   }
 
-  .main-section-label {
+  /* ─── PANEL (big card like reference) ─── */
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 28px 28px 24px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .panel::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 50% -10%, rgba(224,53,53,0.055) 0%, transparent 60%);
+    pointer-events:none;
+  }
+  .panel-red   { border-top: 3px solid var(--red); }
+  .panel-gold  { border-top: 3px solid var(--gold); }
+  .panel-orange{ border-top: 3px solid var(--orange); }
+
+  .panel-label {
     font-family: var(--mono);
     font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--muted);
-    margin-bottom: 22px;
+    letter-spacing: 3px;
+    color: var(--text2);
+    margin-bottom: 14px;
     text-transform: uppercase;
   }
 
-  .main-number {
+  /* ─── BIG NUMBER ─── */
+  .big-num {
     font-family: var(--display);
-    font-size: clamp(24px, 5.5vw, 62px);
+    font-size: clamp(26px, 5.8vw, 66px);
     color: var(--red);
     letter-spacing: 2px;
     line-height: 1;
-    text-shadow: 0 0 60px var(--red-glow), 0 0 20px rgba(224,53,53,0.2);
-    word-break: break-all;
+    text-shadow: 0 0 60px var(--red-glow), 0 0 15px rgba(224,53,53,0.2);
+    margin-bottom: 10px;
     font-variant-numeric: tabular-nums;
   }
+  .big-num.gold  { color: var(--gold); text-shadow: 0 0 40px rgba(240,165,0,0.35); }
+  .big-num.orange{ color: var(--orange); text-shadow: 0 0 40px rgba(224,122,53,0.35); }
 
-  .usd-sub {
+  /* ─── RANGE LINE ─── */
+  .range-line {
     font-family: var(--mono);
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 14px;
-    letter-spacing: 1px;
+    font-size: 11px;
+    color: var(--text2);
+    line-height: 2;
+    margin-bottom: 14px;
   }
-  .usd-sub span { color: var(--text); }
+  .range-line .hl  { color: var(--text); }
+  .range-line .sep { color: var(--muted); margin: 0 6px; }
 
-  /* TIMER SECTION */
-  .timer-section {
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 44px 24px;
-    text-align: center;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .timer-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--muted);
-    margin-bottom: 28px;
-    text-transform: uppercase;
-  }
-
-  .timer-row {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    gap: 6px;
-    flex-wrap: wrap;
-    font-family: var(--display);
-    font-size: clamp(32px, 5vw, 52px);
-    color: #fff;
-  }
-
-  .t-val { color: #fff; letter-spacing: 1px; }
-  .t-lbl {
-    font-family: var(--body);
-    font-size: clamp(13px, 2vw, 18px);
-    color: var(--muted);
-    font-weight: 400;
-    margin-right: 10px;
-    letter-spacing: 0;
-  }
-
-  /* SPEED SECTION */
-  .speed-section {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 44px 24px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .speed-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--muted);
-    margin-bottom: 22px;
-    text-transform: uppercase;
-  }
-
-  .speed-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-  }
-
-  .speed-card {
-    background: var(--card);
-    border: 1px solid var(--border2);
-    padding: 20px 16px 18px;
-    text-align: center;
-  }
-
-  .speed-period {
-    font-family: var(--mono);
-    font-size: 8px;
-    letter-spacing: 3px;
-    color: var(--muted);
-    display: block;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-  }
-
-  .speed-val {
-    font-family: var(--display);
-    font-size: clamp(20px, 3vw, 30px);
-    color: var(--red);
-    display: block;
-    text-shadow: 0 0 14px var(--red-glow);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .speed-desc {
-    font-family: var(--mono);
-    font-size: 9px;
-    color: var(--muted);
-    font-style: italic;
-    letter-spacing: 0;
-  }
-
-  /* STATS ROW */
-  .stats-section {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 0 24px 44px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-top: 0;
-  }
-
-  .stat-card {
-    background: var(--card);
-    border: 1px solid var(--border2);
-    border-left: 3px solid var(--gold);
-    padding: 18px 20px;
-    text-align: center;
-  }
-
-  .stat-lbl { font-family: var(--mono); font-size: 8px; letter-spacing: 3px; color: var(--muted); display:block; margin-bottom:8px; }
-  .stat-val { font-family: var(--display); font-size: 26px; color: var(--gold); display:block; line-height:1; }
-  .stat-sub { font-family: var(--mono); font-size: 9px; color: var(--muted); margin-top:4px; }
-
-  /* MILESTONE */
-  .milestone-section {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 44px 24px;
-    border-bottom: 1px solid var(--border);
-  }
-  .section-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 4px;
-    color: var(--muted);
-    margin-bottom: 22px;
-    text-transform: uppercase;
-  }
-  .milestone-item {
+  /* ─── BADGE + RATE inline ─── */
+  .info-row {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 14px;
-    padding: 12px 0;
-    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+    margin-bottom: 4px;
   }
-  .milestone-item:last-child { border-bottom: none; }
-  .m-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
-  .m-dot.done { background: var(--green); box-shadow: 0 0 7px var(--green); }
-  .m-dot.pend { background: var(--border2); }
-  .m-label { flex:1; font-family:var(--mono); font-size:11px; color:var(--text); }
-  .m-bar-wrap { width:100px; height:3px; background:#1a1a1a; border-radius:1px; overflow:hidden; }
-  .m-bar-fill { height:100%; background:var(--red); }
-  .m-val { font-family:var(--mono); font-size:11px; width:68px; text-align:right; }
-  .m-val.done { color:var(--green); }
-  .m-val.pend { color:var(--muted); }
+  .tag {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 2px; padding: 4px 12px;
+    border-radius: 2px;
+  }
+  .tag-red    { background:rgba(224,53,53,0.12); border:1px solid var(--red-dim); color:var(--red); }
+  .tag-gold   { background:rgba(240,165,0,0.1);  border:1px solid #5a3d00; color:var(--gold); }
+  .tag-orange { background:rgba(224,122,53,0.12);border:1px solid #5a3010; color:var(--orange); }
+  .rate-txt {
+    font-family: var(--mono); font-size: 10px; color: var(--muted);
+  }
 
-  footer {
-    text-align:center;
-    padding: 32px 20px;
+  /* ─── TIMER BLOCKS ─── */
+  .timer-row {
+    display: flex; justify-content: center;
+    gap: 8px; margin-top: 22px; flex-wrap: wrap;
+  }
+  .tb {
+    background: #0d0d0d;
+    border: 1px solid var(--border2);
+    padding: 13px 18px;
+    text-align: center; min-width: 72px;
+  }
+  .tb-val {
+    font-family: var(--display);
+    font-size: 38px;
+    color: var(--red);
+    display: block; line-height: 1;
+    text-shadow: 0 0 16px var(--red-glow);
+  }
+  .tb-lbl {
     font-family: var(--mono);
-    font-size: 9px;
-    color: var(--muted);
-    letter-spacing: 2px;
-    line-height: 2.4;
+    font-size: 8px; letter-spacing: 2px;
+    color: var(--muted); display: block; margin-top: 5px;
+    text-transform: uppercase;
+  }
+  .tb-sep {
+    font-family: var(--display); font-size: 38px;
+    color: var(--red-dim); align-self: center;
+    animation: blink 1s step-end infinite;
+    padding-bottom: 16px;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px; background: var(--border);
+    margin: 22px 0 18px;
+  }
+
+  /* ─── WASTE 2-COLUMN CARDS ─── */
+  .waste-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+  .waste-col {
+    background: var(--card2);
+    border: 1px solid var(--border2);
+    padding: 22px 18px 18px;
+    text-align: center;
+    position: relative;
+  }
+  .waste-col.gold-top  { border-top: 2px solid var(--gold); }
+  .waste-col.red-top   { border-top: 2px solid var(--red); }
+  .waste-col .wc-title {
+    font-family: var(--mono); font-size: 8px;
+    letter-spacing: 2px; color: var(--muted);
+    margin-bottom: 14px; line-height: 1.7;
+    text-transform: uppercase;
+  }
+  .waste-col .wc-low {
+    font-family: var(--display);
+    font-size: clamp(16px, 2.8vw, 28px);
+    line-height: 1; margin-bottom: 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .waste-col.gold-top .wc-low { color: var(--gold); }
+  .waste-col.red-top  .wc-low { color: var(--red); text-shadow: 0 0 12px var(--red-glow); }
+  .waste-col .wc-dash {
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted); margin: 3px 0;
+  }
+  .waste-col .wc-high {
+    font-family: var(--display);
+    font-size: clamp(16px, 2.8vw, 28px);
+    line-height: 1; margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .waste-col.gold-top .wc-high { color: var(--gold); }
+  .waste-col.red-top  .wc-high { color: var(--red); text-shadow: 0 0 12px var(--red-glow); }
+  .waste-col .wc-desc {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); line-height: 1.6;
+    border-top: 1px solid var(--border);
+    padding-top: 10px; margin-top: 2px;
+  }
+
+  /* ─── DEFINITION BOX ─── */
+  .def-box {
+    background: #0d0d0d;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    padding: 16px 20px;
+    margin-bottom: 16px;
+  }
+  .def-title {
+    font-family: var(--mono); font-size: 9px;
+    letter-spacing: 3px; color: var(--muted);
+    margin-bottom: 10px; text-transform: uppercase;
+  }
+  .def-grid {
+    display: grid; grid-template-columns: repeat(3,1fr); gap: 10px;
+  }
+  .def-item { padding: 6px 0; }
+  .def-term {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--text2); letter-spacing: 1px;
+    display: block; margin-bottom: 4px;
+  }
+  .def-desc {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--muted); line-height: 1.6;
   }
 
   @media (max-width: 600px) {
-    .speed-grid { grid-template-columns: repeat(2, 1fr); }
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .m-bar-wrap { display:none; }
+    .waste-cols { grid-template-columns: 1fr; }
+    .def-grid   { grid-template-columns: 1fr; }
+  }
+
+  /* ─── FACT GRID ─── */
+  .fact-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .fact-card {
+    background: var(--card2);
+    border: 1px solid var(--border);
+    padding: 14px 16px;
+    text-align: center;
+  }
+  .fact-val {
+    font-family: var(--display);
+    font-size: 22px; color: var(--text);
+    display: block; line-height: 1.1; margin-bottom: 4px;
+  }
+  .fact-lbl {
+    font-family: var(--mono); font-size: 8px;
+    color: var(--muted); line-height: 1.5; letter-spacing: 0.5px;
+  }
+
+  /* ─── SPEED GRID ─── */
+  .speed-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 10px;
+  }
+  .speed-card {
+    background: var(--card2); border:1px solid var(--border);
+    padding: 18px 14px; text-align:center;
+  }
+  .speed-period {
+    font-family:var(--mono); font-size:8px; letter-spacing:3px;
+    color:var(--muted); display:block; margin-bottom:10px;
+  }
+  .speed-val {
+    font-family:var(--display); font-size: clamp(18px,2.5vw,26px);
+    color:var(--red); display:block;
+    text-shadow:0 0 12px var(--red-glow); line-height:1; margin-bottom:5px;
+  }
+  .speed-desc {
+    font-family:var(--mono); font-size:8px; color:var(--muted);
+    font-style:italic;
+  }
+
+  /* ─── MILESTONE ─── */
+  .m-item {
+    display:flex; align-items:center; gap:12px;
+    padding:10px 0; border-bottom:1px solid var(--border);
+  }
+  .m-item:last-child { border-bottom:none; }
+  .m-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .m-dot.done { background:var(--green); box-shadow:0 0 7px var(--green); }
+  .m-dot.pend { background:var(--border2); }
+  .m-label { flex:1; font-family:var(--mono); font-size:11px; color:var(--text); }
+  .m-bar   { width:80px; height:3px; background:#1a1a1a; border-radius:1px; overflow:hidden; }
+  .m-fill  { height:100%; background:var(--red); }
+  .m-val   { font-family:var(--mono); font-size:11px; width:64px; text-align:right; }
+  .m-val.done { color:var(--green); }
+  .m-val.pend { color:var(--muted); }
+
+  /* ─── SECTION LABEL (standalone) ─── */
+  .sec-label {
+    font-family: var(--mono); font-size: 10px;
+    letter-spacing: 3px; color: var(--muted);
+    margin-bottom: 14px; text-transform: uppercase;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align:center; padding: 30px 20px;
+    font-family:var(--mono); font-size:9px;
+    color:var(--muted); letter-spacing:2px;
+    border-top:1px solid var(--border); line-height:2.5;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 600px) {
+    .speed-grid  { grid-template-columns: repeat(2,1fr); }
+    .fact-grid   { grid-template-columns: repeat(2,1fr); }
+    .m-bar       { display:none; }
+    .detail-key  { width:100%; }
+    .tb-val      { font-size:28px; }
+    .big-num     { font-size: 28px; }
   }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
+<div class="ticker-bar">
   UANG PAJAK RAKYAT INDONESIA SEDANG DIBELANJAKAN — PROGRAM MAKAN BERGIZI GRATIS AKTIF SEJAK 6 JANUARI 2025
 </div>
 
 <header>
-  <div class="header-title">TICKER BIAYA <span>MBG</span></div>
-  <div class="header-sub">"Makan Bergizi Gratis" — Gratis untuk siapa?</div>
-  <div class="badge-row">
-    <div class="badge-live"><div class="live-dot"></div>LIVE</div>
-    <div class="badge-fase">FASE 2 · 2026</div>
+  <div class="h-title">TICKER BIAYA <em>MBG</em></div>
+  <div class="h-sub">"Makan Bergizi Gratis" — Gratis untuk siapa?</div>
+  <div class="h-badges">
+    <div class="badge badge-live"><div class="live-dot"></div>LIVE</div>
+    <div class="badge badge-fase">FASE 2 · 2026</div>
   </div>
 </header>
 
-<!-- MAIN NUMBER -->
-<div class="main-section">
-  <div class="main-section-label">Total uang rakyat yang sudah dihabiskan</div>
-  <div class="main-number" id="totalCost">Rp 0</div>
-  <div class="usd-sub" id="usdSub">~<span>$0</span> miliar USD</div>
-</div>
+<div class="wrap">
 
-<!-- TIMER -->
-<div class="timer-section">
-  <div class="timer-label">Waktu berjalan sejak peluncuran</div>
-  <div class="timer-row">
-    <span class="t-val" id="days">0</span><span class="t-lbl">hari</span>
-    <span class="t-val" id="hours">00</span><span class="t-lbl">jam</span>
-    <span class="t-val" id="mins">00</span><span class="t-lbl">menit</span>
-    <span class="t-val" id="secs">00</span><span class="t-lbl">detik</span>
-  </div>
-</div>
+  <!-- ══ PANEL 1: TOTAL ANGGARAN ══ -->
+  <div class="panel panel-red">
+    <div class="panel-label">PROGRAM MBG — EST. TOTAL ANGGARAN TERPAKAI SEJAK PELUNCURAN</div>
+    <div class="big-num" id="totalCost">Rp 0</div>
+    <div class="range-line">
+      batas bawah: <span class="hl" id="totalLow">Rp 0</span>
+      <span class="sep">|</span>
+      batas atas: <span class="hl" id="totalHigh">Rp 0</span>
+      <span class="sep">|</span>
+      USD: <span class="hl" id="usdVal">$0</span>
+    </div>
+    <div class="range-line">
+      ops: <span class="hl" id="opsAmt">Rp 0</span>
+      <span class="sep">+</span>
+      realisasi resmi Des 2025: <span class="hl">Rp 52.900.000.000.000</span>
+    </div>
+    <div class="info-row">
+      <span class="tag tag-red">BERJALAN</span>
+      <span class="rate-txt">~Rp 917,8 M/hari · Rp 38,2 M/jam · Rp 10,6 jt/dtk</span>
+    </div>
 
-<!-- BURN RATE -->
-<div class="speed-section">
-  <div class="speed-label">Kecepatan bakar uang rakyat</div>
-  <div class="speed-grid">
-    <div class="speed-card">
-      <span class="speed-period">Per Detik</span>
-      <span class="speed-val">Rp 10,6 jt</span>
-      <div class="speed-desc">setiap kedipan mata</div>
-    </div>
-    <div class="speed-card">
-      <span class="speed-period">Per Menit</span>
-      <span class="speed-val">Rp 637,4 jt</span>
-      <div class="speed-desc">lebih cepat dari printer uang</div>
-    </div>
-    <div class="speed-card">
-      <span class="speed-period">Per Jam</span>
-      <span class="speed-val">Rp 38,2 M</span>
-      <div class="speed-desc">sementara kamu kerja</div>
-    </div>
-    <div class="speed-card">
-      <span class="speed-period">Per Hari</span>
-      <span class="speed-val">Rp 917,8 M</span>
-      <div class="speed-desc">setiap hari, tanpa libur</div>
+    <!-- Timer blocks -->
+    <div class="timer-row">
+      <div class="tb"><span class="tb-val" id="days">000</span><span class="tb-lbl">HARI</span></div>
+      <div class="tb-sep">:</div>
+      <div class="tb"><span class="tb-val" id="hours">00</span><span class="tb-lbl">JAM</span></div>
+      <div class="tb-sep">:</div>
+      <div class="tb"><span class="tb-val" id="mins">00</span><span class="tb-lbl">MIN</span></div>
+      <div class="tb-sep">:</div>
+      <div class="tb"><span class="tb-val" id="secs">00</span><span class="tb-lbl">DTK</span></div>
     </div>
   </div>
-</div>
 
-<!-- STATS -->
-<div class="stats-section">
-  <div class="stats-grid">
-    <div class="stat-card">
-      <span class="stat-lbl">Penerima Manfaat</span>
-      <span class="stat-val">50,7 Jt</span>
-      <div class="stat-sub">per Des 2025</div>
+  <!-- ══ PANEL 2: FOOD WASTE ══ -->
+  <div class="panel panel-gold">
+    <div class="panel-label">⚠ ESTIMASI BIAYA YANG TERBUANG — <em style="font-style:italic;color:var(--gold)">FOOD WASTE</em> PROGRAM MBG</div>
+    <div style="font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:18px;">
+      Sumber: riausky.com — Potensi Food Waste Program MBG
     </div>
-    <div class="stat-card">
-      <span class="stat-lbl">Satuan Pelayanan (SPPG)</span>
-      <span class="stat-val">17.555</span>
-      <div class="stat-sub">aktif nasional</div>
+
+    <!-- Definition box -->
+    <div class="def-box">
+      <div class="def-title">📖 Definisi — Apa itu Food Waste?</div>
+      <div class="def-grid">
+        <div class="def-item">
+          <span class="def-term">WASTE TOTAL (15–20%)</span>
+          <span class="def-desc">Seluruh makanan yang tidak dikonsumsi — termasuk sisa piring, makanan rusak saat distribusi, dan kelebihan produksi.</span>
+        </div>
+        <div class="def-item">
+          <span class="def-term">WASTE MURNI (9–11%)</span>
+          <span class="def-desc">Bagian yang benar-benar tidak bisa dimanfaatkan — sudah busuk, terkontaminasi, atau tidak layak untuk diredistribusi.</span>
+        </div>
+        <div class="def-item">
+          <span class="def-term">MASIH BISA DISALURKAN (6–9%)</span>
+          <span class="def-desc">Makanan sisa yang masih layak konsumsi dan bisa diberikan ke kelompok rentan, bank pangan, atau diolah kembali.</span>
+        </div>
+      </div>
     </div>
-    <div class="stat-card">
-      <span class="stat-lbl">Porsi Dibagikan</span>
-      <span class="stat-val">1,4 Mrd</span>
-      <div class="stat-sub">s.d. Oktober 2025</div>
+
+    <!-- 2-column waste cards -->
+    <div class="waste-cols">
+      <div class="waste-col gold-top">
+        <div class="wc-title">WASTE TOTAL (15–20% dari anggaran)</div>
+        <div class="wc-low" id="wasteLow">Rp 0</div>
+        <div class="wc-dash">–</div>
+        <div class="wc-high" id="wasteHigh">Rp 0</div>
+        <div class="wc-desc">Makanan terbuang, tidak termakan, atau hilang dalam rantai distribusi</div>
+      </div>
+      <div class="waste-col red-top">
+        <div class="wc-title">WASTE MURNI (9–11% · benar-benar tidak bisa dimanfaatkan)</div>
+        <div class="wc-low" id="wastePureLow">Rp 0</div>
+        <div class="wc-dash">–</div>
+        <div class="wc-high" id="wastePureHigh">Rp 0</div>
+        <div class="wc-desc">Sampah makanan yang tidak bisa didaur ulang atau disalurkan kembali</div>
+      </div>
+    </div>
+
+    <!-- Masih bisa disalurkan — full width -->
+    <div class="waste-cols" style="grid-template-columns:1fr;">
+      <div class="waste-col" style="border-top:2px solid var(--green);">
+        <div class="wc-title" style="color:var(--green);">MASIH BISA DISALURKAN (6–9% · layak konsumsi)</div>
+        <div class="wc-low" id="salvageLow" style="color:var(--green);">Rp 0</div>
+        <div class="wc-dash">–</div>
+        <div class="wc-high" id="salvageHigh" style="color:var(--green);">Rp 0</div>
+        <div class="wc-desc">Setara 451.000–603.000 ton makanan layak konsumsi yang bisa diberikan ke kelompok yang membutuhkan</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Fact grid -->
+    <div class="fact-grid">
+      <div class="fact-card">
+        <span class="fact-val">82 Juta</span>
+        <span class="fact-lbl">Target penerima MBG 2026</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">1,1–1,4 Jt ton</span>
+        <span class="fact-lbl">Potensi food waste di sekolah per tahun</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">451–603 rb ton</span>
+        <span class="fact-lbl">Masih layak konsumsi & bisa dibagikan</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">23–48 Jt ton</span>
+        <span class="fact-lbl">Total sampah makanan nasional per tahun</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">15–20%</span>
+        <span class="fact-lbl">Estimasi food waste dari total makanan</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">3–5%</span>
+        <span class="fact-lbl">Target pemerintah penyelamatan pangan</span>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- MILESTONES -->
-<div class="milestone-section">
-  <div class="section-label">Tonggak Realisasi Anggaran</div>
-  <div id="milestones"></div>
-</div>
+  <!-- ══ PANEL 3: KECEPATAN BAKAR ══ -->
+  <div class="panel panel-orange">
+    <div class="sec-label">Kecepatan bakar uang rakyat</div>
+    <div class="speed-grid">
+      <div class="speed-card">
+        <span class="speed-period">Per Detik</span>
+        <span class="speed-val">Rp 10,6 jt</span>
+        <div class="speed-desc">setiap kedipan mata</div>
+      </div>
+      <div class="speed-card">
+        <span class="speed-period">Per Menit</span>
+        <span class="speed-val">Rp 637,4 jt</span>
+        <div class="speed-desc">lebih cepat dari printer uang</div>
+      </div>
+      <div class="speed-card">
+        <span class="speed-period">Per Jam</span>
+        <span class="speed-val">Rp 38,2 M</span>
+        <div class="speed-desc">sementara kamu kerja</div>
+      </div>
+      <div class="speed-card">
+        <span class="speed-period">Per Hari</span>
+        <span class="speed-val">Rp 917,8 M</span>
+        <div class="speed-desc">setiap hari, tanpa libur</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 4: STATS ══ -->
+  <div class="panel">
+    <div class="sec-label">Data Program MBG — per Desember 2025</div>
+    <div class="fact-grid">
+      <div class="fact-card">
+        <span class="fact-val">50,7 Jt</span>
+        <span class="fact-lbl">Penerima manfaat aktif</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">17.555</span>
+        <span class="fact-lbl">Satuan Pelayanan (SPPG)</span>
+      </div>
+      <div class="fact-card">
+        <span class="fact-val">1,4 Miliar</span>
+        <span class="fact-lbl">Porsi dibagikan (s.d. Okt 2025)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ PANEL 5: MILESTONES ══ -->
+  <div class="panel">
+    <div class="sec-label">Tonggak Realisasi Anggaran</div>
+    <div id="milestones"></div>
+  </div>
+
+</div><!-- /wrap -->
 
 <footer>
   SUMBER: CNBC INDONESIA · REALISASI Rp 52,9 T PER 15 DES 2025 · PAGU APBN 2025: Rp 71 T<br>
-  FASE 2 (2026): ANGGARAN Rp 335,27 T · PERPRES 83/2024<br>
+  FASE 2 (2026): ANGGARAN Rp 335,27 T · PERPRES 83/2024 · FOOD WASTE: RIAUSKY.COM<br>
   ESTIMASI BUKAN DATA RESMI PEMERINTAH · UNTUK TRANSPARANSI PUBLIK
 </footer>
 
 <script>
-  // ── DATA ──
-  // Fase 1 (2025): Rp 71 T / tahun → Rp 71M/hari
-  // Fase 2 (2026): Rp 335,27 T / tahun → Rp 917,8M/hari (sesuai gambar)
-  // Anchor: 15 Des 2025 = Rp 52,9 T realisasi
-
+  /* ── CONSTANTS ── */
   const START         = new Date('2025-01-06T00:00:00+07:00');
   const ANCHOR_DATE   = new Date('2025-12-15T00:00:00+07:00');
   const ANCHOR_AMOUNT = 52_900_000_000_000;
-
-  // Per gambar: Rp 917,8 M/hari = Rp 917.800.000.000/hari
-  const DAILY_FASE2   = 917_800_000_000;
-  const PER_SEC_FASE2 = DAILY_FASE2 / 86400; // ≈ Rp 10,6 jt/dtk
-
-  // Fase 1 selesai 31 Des 2025, Fase 2 mulai 1 Jan 2026
   const FASE2_START   = new Date('2026-01-01T00:00:00+07:00');
-  const DAILY_FASE1   = 71_000_000_000;
-  const PER_SEC_FASE1 = DAILY_FASE1 / 86400;
 
-  // Estimasi total dari anchor ke Fase2_start (16 hari sisa Des 2025)
-  const GAP_SEC_TO_FASE2 = (FASE2_START - ANCHOR_DATE) / 1000;
-  const AMOUNT_AT_FASE2  = ANCHOR_AMOUNT + GAP_SEC_TO_FASE2 * PER_SEC_FASE1;
+  const DAILY_F1   = 71_000_000_000;
+  const DAILY_F2   = 917_800_000_000;
+  const PER_SEC_F1 = DAILY_F1 / 86400;
+  const PER_SEC_F2 = DAILY_F2 / 86400;
+  const USD_RATE   = 16300;
 
-  const USD_RATE = 16300; // 1 USD ≈ Rp 16.300
+  const AMOUNT_AT_FASE2 = ANCHOR_AMOUNT + (FASE2_START - ANCHOR_DATE) / 1000 * PER_SEC_F1;
 
   const MILESTONES = [
-    { label: '50 Triliun',             val: 50e12 },
-    { label: '52,9 T — Realisasi Des 2025', val: 52_900_000_000_000 },
-    { label: '71 T — Pagu Penuh 2025', val: 71e12 },
-    { label: '100 Triliun',            val: 100e12 },
-    { label: '200 Triliun',            val: 200e12 },
-    { label: '335,27 T — Pagu 2026',   val: 335_270_000_000_000 },
+    { label: '50 Triliun',                    val: 50e12 },
+    { label: '52,9 T — Realisasi Des 2025',   val: 52_900_000_000_000 },
+    { label: '71 T — Pagu Penuh 2025',        val: 71e12 },
+    { label: '100 Triliun',                   val: 100e12 },
+    { label: '200 Triliun',                   val: 200e12 },
+    { label: '335,27 T — Pagu 2026',          val: 335_270_000_000_000 },
   ];
 
+  /* ── HELPERS ── */
   function calcTotal(now) {
-    if (now < ANCHOR_DATE) {
-      // Before anchor — extrapolate back
-      return ANCHOR_AMOUNT + (now - ANCHOR_DATE) / 1000 * PER_SEC_FASE1;
-    } else if (now < FASE2_START) {
-      // Fase 1 tail (15–31 Des 2025)
-      return ANCHOR_AMOUNT + (now - ANCHOR_DATE) / 1000 * PER_SEC_FASE1;
-    } else {
-      // Fase 2 (2026+)
-      return AMOUNT_AT_FASE2 + (now - FASE2_START) / 1000 * PER_SEC_FASE2;
-    }
+    if (now < FASE2_START)
+      return ANCHOR_AMOUNT + (now - ANCHOR_DATE) / 1000 * PER_SEC_F1;
+    return AMOUNT_AT_FASE2 + (now - FASE2_START) / 1000 * PER_SEC_F2;
   }
 
-  function formatFull(n) {
+  function fmt(n) {
     return 'Rp\u00a0' + Math.floor(n).toLocaleString('id-ID');
   }
-
-  function formatUSD(n) {
-    const usd = n / USD_RATE;
-    if (usd >= 1e9) return '~$' + (usd / 1e9).toFixed(2) + ' miliar USD';
-    return '~$' + (usd / 1e6).toFixed(1) + ' juta USD';
+  function fmtUSD(n) {
+    const u = n / USD_RATE;
+    return u >= 1e9
+      ? '$' + (u/1e9).toFixed(2) + ' M USD'
+      : '$' + (u/1e6).toFixed(1) + ' jt USD';
   }
+  function pad(n,l=2){ return String(Math.floor(n)).padStart(l,'0'); }
 
-  function pad(n, len=2) {
-    return String(Math.floor(Math.abs(n))).padStart(len,'0');
-  }
+  /* ── DOM refs ── */
+  const els = {
+    totalCost:     document.getElementById('totalCost'),
+    totalLow:      document.getElementById('totalLow'),
+    totalHigh:     document.getElementById('totalHigh'),
+    usdVal:        document.getElementById('usdVal'),
+    opsAmt:        document.getElementById('opsAmt'),
+    wasteLow:      document.getElementById('wasteLow'),
+    wasteHigh:     document.getElementById('wasteHigh'),
+    wastePureLow:  document.getElementById('wastePureLow'),
+    wastePureHigh: document.getElementById('wastePureHigh'),
+    salvageLow:    document.getElementById('salvageLow'),
+    salvageHigh:   document.getElementById('salvageHigh'),
+    days:  document.getElementById('days'),
+    hours: document.getElementById('hours'),
+    mins:  document.getElementById('mins'),
+    secs:  document.getElementById('secs'),
+  };
 
   let lastSec = -1;
 
@@ -484,38 +650,45 @@
       const done = total >= m.val;
       const pct  = Math.min(100, total / m.val * 100);
       const el   = document.createElement('div');
-      el.className = 'milestone-item';
+      el.className = 'm-item';
       el.innerHTML = `
         <div class="m-dot ${done?'done':'pend'}"></div>
         <span class="m-label">${m.label}</span>
-        <div class="m-bar-wrap"><div class="m-bar-fill" style="width:${pct.toFixed(1)}%"></div></div>
-        <span class="m-val ${done?'done':'pend'}">${done ? 'TERCAPAI' : pct.toFixed(1)+'%'}</span>
-      `;
+        <div class="m-bar"><div class="m-fill" style="width:${pct.toFixed(1)}%"></div></div>
+        <span class="m-val ${done?'done':'pend'}">${done?'TERCAPAI':pct.toFixed(1)+'%'}</span>`;
       c.appendChild(el);
     });
   }
 
+  /* ── RAF LOOP ── */
   function update() {
     const now   = new Date();
     const total = calcTotal(now);
 
-    // Big smooth number
-    document.getElementById('totalCost').textContent = formatFull(total);
-    document.getElementById('usdSub').innerHTML = '~<span>' + formatUSD(total).replace('~','') + '</span>';
+    // Total anggaran — smooth every frame
+    els.totalCost.textContent  = fmt(total);
+    els.totalLow.textContent   = fmt(total * 0.93);   // -7% uncertainty
+    els.totalHigh.textContent  = fmt(total * 1.07);   // +7% uncertainty
+    els.usdVal.textContent     = fmtUSD(total);
+    els.opsAmt.textContent     = fmt(total - ANCHOR_AMOUNT > 0 ? total - ANCHOR_AMOUNT : 0);
 
-    // Timer from START
+    // Food waste — smooth every frame
+    els.wasteLow.textContent      = fmt(total * 0.15);
+    els.wasteHigh.textContent     = fmt(total * 0.20);
+    els.wastePureLow.textContent  = fmt(total * 0.09);
+    els.wastePureHigh.textContent = fmt(total * 0.11);
+    els.salvageLow.textContent    = fmt(total * 0.06);    // salvageable = total-pure
+    els.salvageHigh.textContent   = fmt(total * 0.09);
+
+    // Timer — only on second change
     const elapsed = Math.max(0, (now - START) / 1000);
     const curSec  = Math.floor(elapsed);
     if (curSec !== lastSec) {
       lastSec = curSec;
-      const d = Math.floor(elapsed / 86400);
-      const h = Math.floor((elapsed % 86400) / 3600);
-      const m = Math.floor((elapsed % 3600) / 60);
-      const s = curSec % 60;
-      document.getElementById('days').textContent  = d;
-      document.getElementById('hours').textContent = pad(h);
-      document.getElementById('mins').textContent  = pad(m);
-      document.getElementById('secs').textContent  = pad(s);
+      els.days.textContent  = pad(Math.floor(elapsed / 86400), 3);
+      els.hours.textContent = pad(Math.floor((elapsed % 86400) / 3600));
+      els.mins.textContent  = pad(Math.floor((elapsed % 3600) / 60));
+      els.secs.textContent  = pad(curSec % 60);
       buildMilestones(total);
     }
 
@@ -523,12 +696,6 @@
   }
 
   requestAnimationFrame(update);
-
-  function shareWA() {
-    const total = calcTotal(new Date());
-    const text  = `Program MBG telah menghabiskan ${formatFull(total)} uang rakyat sejak 6 Jan 2025. Fase 2 (2026): Rp 917,8 M/hari.`;
-    window.open('https://wa.me/?text=' + encodeURIComponent(text));
-  }
 </script>
 </body>
 </html>
