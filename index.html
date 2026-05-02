@@ -104,8 +104,7 @@
   .sp-period{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--muted);
     display:block;margin-bottom:10px;text-transform:uppercase;}
   .sp-val{font-family:var(--display);font-size:clamp(18px,2.5vw,26px);color:var(--red);
-    display:block;text-shadow:0 0 12px var(--red-g);line-height:1;margin-bottom:4px;}
-  .sp-desc{font-family:var(--mono);font-size:8px;color:var(--muted);font-style:italic;}
+    display:block;text-shadow:0 0 12px var(--red-g);line-height:1;}
 
   /* ── FACT GRID ── */
   .fact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -202,6 +201,26 @@
   footer{text-align:center;padding:28px 20px;font-family:var(--mono);font-size:9px;
     color:var(--muted);letter-spacing:2px;border-top:1px solid var(--border);line-height:2.5;}
 
+  /* ── VISIT POPUP ── */
+  .visit-pop{position:fixed;bottom:16px;right:16px;z-index:1000;
+    background:var(--card);border:1px solid var(--border2);border-left:3px solid var(--red);
+    padding:12px 14px 11px;min-width:200px;max-width:240px;
+    box-shadow:0 6px 24px rgba(0,0,0,.55);
+    transform:translateY(140%);transition:transform .35s ease;}
+  .visit-pop.show{transform:translateY(0);}
+  .vp-head{display:flex;align-items:center;justify-content:space-between;gap:8px;
+    margin-bottom:8px;}
+  .vp-title{font-family:var(--mono);font-size:8px;letter-spacing:2px;color:var(--dim);
+    text-transform:uppercase;line-height:1.4;}
+  .vp-close{background:none;border:none;color:var(--muted);cursor:pointer;
+    font-family:var(--mono);font-size:14px;line-height:1;padding:0 2px;}
+  .vp-close:hover{color:var(--text);}
+  .vp-amt{font-family:var(--display);font-size:22px;color:var(--red);letter-spacing:1px;
+    line-height:1;text-shadow:0 0 12px var(--red-g);font-variant-numeric:tabular-nums;
+    margin-bottom:6px;}
+  .vp-time{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1px;}
+  .vp-time .vp-t{color:var(--text);}
+
   /* ── RESPONSIVE ── */
   @media(max-width:600px){
     .speed-grid{grid-template-columns:repeat(2,1fr);}
@@ -211,6 +230,7 @@
     .m-bar{display:none;}
     .tb-val{font-size:26px;}
     .big-num{font-size:22px;}
+    .visit-pop{bottom:10px;right:10px;left:10px;max-width:none;min-width:0;}
   }
 </style>
 </head>
@@ -267,17 +287,14 @@
       <div class="speed-card">
         <span class="sp-period">Per Detik</span>
         <span class="sp-val">Rp 10,6 jt</span>
-        <div class="sp-desc"></div>
       </div>
       <div class="speed-card">
         <span class="sp-period">Per Menit</span>
         <span class="sp-val">Rp 637,4 jt</span>
-        <div class="sp-desc"></div>
       </div>
       <div class="speed-card">
         <span class="sp-period">Per Jam</span>
         <span class="sp-val">Rp 38,2 M</span>
-        <div class="sp-desc"></div>
       </div>
       <div class="speed-card">
         <span class="sp-period">Per Hari</span>
@@ -408,6 +425,16 @@
 
 </div><!-- /wrap -->
 
+<!-- ══ VISIT POPUP ══ -->
+<div class="visit-pop" id="visitPop" role="status" aria-live="polite">
+  <div class="vp-head">
+    <div class="vp-title">Habis selama Anda<br>mengunjungi halaman ini</div>
+    <button class="vp-close" id="visitClose" aria-label="Tutup">×</button>
+  </div>
+  <div class="vp-amt" id="visitAmt">Rp 0</div>
+  <div class="vp-time">durasi: <span class="vp-t" id="visitTime">00:00</span></div>
+</div>
+
 <footer>
   SUMBER: CNBC INDONESIA · REALISASI Rp 52,9 T PER 15 DES 2025 · PAGU APBN 2025: Rp 71 T<br>
   FASE 2 (2026): ANGGARAN Rp 335,27 T · PERPRES 83/2024 · FOOD WASTE: RIAUSKY.COM<br>
@@ -463,9 +490,12 @@
     salvageLow:   E('salvageLow'),
     salvageHigh:  E('salvageHigh'),
     days: E('days'), hours: E('hours'), mins: E('mins'), secs: E('secs'),
+    visitAmt:  E('visitAmt'),
+    visitTime: E('visitTime'),
   };
 
   let lastSec = -1;
+  const VISIT_START = performance.now();
 
   function buildMilestones(total) {
     const c = E('milestones');
@@ -510,10 +540,23 @@
       els.mins.textContent  = pad(Math.floor((elapsed % 3600) / 60));
       els.secs.textContent  = pad(curSec % 60);
       buildMilestones(total);
+
+      const visitSec = (performance.now() - VISIT_START) / 1000;
+      const rate     = now < FASE2_START ? PER_SEC_F1 : PER_SEC_F2;
+      els.visitAmt.textContent  = fmt(visitSec * rate);
+      const vs = Math.floor(visitSec);
+      const vh = Math.floor(vs / 3600);
+      els.visitTime.textContent = (vh ? pad(vh) + ':' : '') +
+                                  pad(Math.floor((vs % 3600) / 60)) + ':' + pad(vs % 60);
     }
 
     requestAnimationFrame(update);
   }
+
+  /* ── VISIT POPUP ── */
+  const visitPop = E('visitPop');
+  setTimeout(() => visitPop.classList.add('show'), 800);
+  E('visitClose').addEventListener('click', () => visitPop.classList.remove('show'));
 
   /* ── TABS ── */
   function switchTab(id, btn) {
