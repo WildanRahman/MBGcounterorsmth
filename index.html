@@ -322,8 +322,6 @@
       batas bawah: <span class="hl" id="totalLow">Rp 0</span>
       <span class="sep">|</span>
       batas atas: <span class="hl" id="totalHigh">Rp 0</span>
-      <span class="sep">|</span>
-      USD: <span class="hl" id="usdVal">$0</span>
     </div>
     <div class="rline">
       ops: <span class="hl" id="opsAmt">Rp 0</span>
@@ -562,7 +560,6 @@
   const DAILY_F2      = 917_800_000_000;
   const PER_SEC_F1    = DAILY_F1 / 86400;
   const PER_SEC_F2    = DAILY_F2 / 86400;
-  const USD_RATE      = 16300;
   const AMOUNT_AT_F2  = ANCHOR_AMOUNT + (FASE2_START - ANCHOR_DATE) / 1000 * PER_SEC_F1;
 
   const MILESTONES = [
@@ -581,10 +578,6 @@
   }
 
   function fmt(n)    { return 'Rp\u00a0' + Math.floor(n).toLocaleString('id-ID'); }
-  function fmtUSD(n) {
-    const u = n / USD_RATE;
-    return u >= 1e9 ? '$' + (u/1e9).toFixed(2) + ' M USD' : '$' + (u/1e6).toFixed(1) + ' jt USD';
-  }
   function pad(n,l=2){ return String(Math.floor(n)).padStart(l,'0'); }
 
   const E = id => document.getElementById(id);
@@ -592,7 +585,6 @@
     totalCost:    E('totalCost'),
     totalLow:     E('totalLow'),
     totalHigh:    E('totalHigh'),
-    usdVal:       E('usdVal'),
     opsAmt:       E('opsAmt'),
     wasteBig:      E('wasteBig'),
     wasteLow:      E('wasteLow'),
@@ -634,7 +626,6 @@
     els.totalCost.textContent  = fmt(total);
     els.totalLow.textContent   = fmt(total * 0.93);
     els.totalHigh.textContent  = fmt(total * 1.07);
-    els.usdVal.textContent     = fmtUSD(total);
     els.opsAmt.textContent     = fmt(Math.max(0, total - ANCHOR_AMOUNT));
 
     els.wasteBig.textContent       = fmt(total * 0.175);
