@@ -190,19 +190,42 @@
 
   /* ── CASE LIST ── */
   .case-list{display:flex;flex-direction:column;gap:6px;text-align:left;}
-  .case-row{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;
+  .case-row{display:grid;grid-template-columns:88px 1fr auto;gap:14px;align-items:flex-start;
     background:var(--card2);border:1px solid var(--border);border-left:2px solid var(--red);
     padding:10px 14px;}
+  .case-row.unk{border-left-color:var(--border2);}
   .case-date{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px;
-    line-height:1.3;}
-  .case-loc{font-family:var(--mono);font-size:11px;color:var(--text);line-height:1.4;}
-  .case-loc .case-prov{color:var(--muted);font-size:9px;display:block;letter-spacing:1px;
-    text-transform:uppercase;margin-top:2px;}
+    line-height:1.3;padding-top:2px;}
+  .case-loc{font-family:var(--mono);font-size:11px;color:var(--text);line-height:1.4;
+    min-width:0;}
+  .case-prov{color:var(--muted);font-size:9px;display:block;letter-spacing:1px;
+    text-transform:uppercase;margin-bottom:4px;}
+  .case-schools{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:2px;}
+  .case-schools li{font-family:var(--mono);font-size:10px;color:var(--text);line-height:1.4;
+    padding-left:10px;position:relative;}
+  .case-schools li::before{content:'›';position:absolute;left:0;color:var(--red-dim);}
   .case-vic{font-family:var(--display);font-size:20px;color:var(--red);
     text-shadow:0 0 8px var(--red-g);line-height:1;font-variant-numeric:tabular-nums;
-    text-align:right;}
+    text-align:right;padding-top:2px;}
+  .case-vic.unk{color:var(--muted);text-shadow:none;font-size:13px;}
   .case-vic small{font-family:var(--mono);font-size:8px;color:var(--muted);
     display:block;letter-spacing:1px;margin-top:3px;text-shadow:none;}
+
+  /* ── CASE FILTER ── */
+  .case-toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap;
+    text-align:left;}
+  .case-toolbar label{font-family:var(--mono);font-size:9px;letter-spacing:2px;
+    color:var(--muted);text-transform:uppercase;}
+  .case-select{font-family:var(--mono);font-size:11px;background:var(--card2);
+    color:var(--text);border:1px solid var(--border2);padding:7px 10px;cursor:pointer;
+    min-width:160px;}
+  .case-select:focus{outline:1px solid var(--red);outline-offset:1px;}
+  .case-count{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px;
+    margin-left:auto;}
+  .case-more{display:block;width:100%;font-family:var(--mono);font-size:10px;letter-spacing:2px;
+    background:var(--card2);color:var(--text);border:1px solid var(--border2);
+    padding:12px;margin-top:8px;cursor:pointer;text-transform:uppercase;}
+  .case-more:hover{background:#1e1e1e;border-color:var(--red-dim);color:var(--red);}
 
   /* ── FOOTER ── */
   footer{text-align:center;padding:28px 20px;font-family:var(--mono);font-size:9px;
@@ -251,7 +274,10 @@
     .visit-pop{bottom:10px;right:10px;left:10px;max-width:none;min-width:0;}
     .visit-reopen{bottom:10px;right:10px;}
     .case-row{grid-template-columns:1fr auto;gap:8px;}
-    .case-date{grid-column:1 / -1;}
+    .case-date{grid-column:1 / -1;padding-top:0;}
+    .case-toolbar{flex-direction:column;align-items:stretch;}
+    .case-count{margin-left:0;}
+    .case-select{width:100%;}
   }
 </style>
 </head>
@@ -386,76 +412,36 @@
     <div class="tab-panel">
       <div class="p-label">KASUS KERACUNAN MASSAL — PROGRAM <em style="font-style:italic;color:var(--gold)">MBG</em></div>
 
-      <div class="big-num" style="color:var(--red);">11.390+</div>
+      <div class="big-num" style="color:var(--red);" id="kVictims">0</div>
       <div class="rline">
         total korban tercatat
         <span class="sep">|</span>
         sumber: <span class="hl">Wikipedia ID</span>
-        <span class="sep">|</span>
-        per: <span class="hl">Feb 2026</span>
       </div>
 
       <div class="fact-grid" style="margin-top:18px;">
-        <div class="fact-card"><span class="fact-val">9+</span><span class="fact-lbl">Provinsi terdampak</span></div>
-        <div class="fact-card"><span class="fact-val">1.333</span><span class="fact-lbl">Korban kasus terbesar (Jabar)</span></div>
-        <div class="fact-card"><span class="fact-val">~1 thn</span><span class="fact-lbl">Sejak program berjalan</span></div>
+        <div class="fact-card"><span class="fact-val" id="kIncidents">0</span><span class="fact-lbl">Insiden keracunan</span></div>
+        <div class="fact-card"><span class="fact-val" id="kProvinces">0</span><span class="fact-lbl">Provinsi terdampak</span></div>
+        <div class="fact-card"><span class="fact-val" id="kSchools">0</span><span class="fact-lbl">Sekolah / lokasi terdampak</span></div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="sec-label" style="text-align:left;">Kasus Tercatat (Sampel)</div>
-      <div class="case-list">
-        <div class="case-row">
-          <div class="case-date">22 Sept<br>2025</div>
-          <div class="case-loc">SDN Cipari & sekolah lain, Bandung Barat<span class="case-prov">Jawa Barat</span></div>
-          <div class="case-vic">1.333<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">31 Okt<br>2025</div>
-          <div class="case-loc">SMK Kandeman, Batang<span class="case-prov">Jawa Tengah</span></div>
-          <div class="case-vic">800<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">1 Okt<br>2025</div>
-          <div class="case-loc">SMAN 1 Kedungadem, Bojonegoro<span class="case-prov">Jawa Timur</span></div>
-          <div class="case-vic">544<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">5 Feb<br>2026</div>
-          <div class="case-loc">SMP Negeri 1 Marau & lainnya<span class="case-prov">Kalimantan Barat</span></div>
-          <div class="case-vic">417<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">13 Agt<br>2025</div>
-          <div class="case-loc">SMP Muhammadiyah 1 Mlati & lainnya<span class="case-prov">Yogyakarta</span></div>
-          <div class="case-vic">379<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">5 Mei<br>2025</div>
-          <div class="case-loc">14 sekolah di Kabupaten PALI<span class="case-prov">Sumatera Selatan</span></div>
-          <div class="case-vic">174<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">1 Okt<br>2025</div>
-          <div class="case-loc">Berbagai TK–SMP, Kabupaten Agam<span class="case-prov">Sumatera Barat</span></div>
-          <div class="case-vic">122<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">15 Okt<br>2025</div>
-          <div class="case-loc">SD Tanding & SMPN 1 Laguboti<span class="case-prov">Sumatera Utara</span></div>
-          <div class="case-vic">121<small>siswa</small></div>
-        </div>
-        <div class="case-row">
-          <div class="case-date">29 Sept<br>2025</div>
-          <div class="case-loc">SDN 6 Matangkuli<span class="case-prov">Aceh Utara</span></div>
-          <div class="case-vic">3<small>siswa</small></div>
-        </div>
+      <div class="sec-label" style="text-align:left;">Daftar Insiden — Diurutkan Terbaru</div>
+      <div class="case-toolbar">
+        <label for="caseFilter">Filter provinsi:</label>
+        <select id="caseFilter" class="case-select">
+          <option value="">Semua provinsi</option>
+        </select>
+        <span class="case-count" id="caseCount">0 insiden</span>
       </div>
+      <div class="case-list" id="caseList"></div>
+      <button class="case-more" id="caseMore" style="display:none;">Tampilkan lebih banyak</button>
 
       <div class="divider"></div>
 
       <div class="def-box">
-        <div class="def-title">Penyebab Teridentifikasi</div>
+        <div class="def-title">Penyebab Teridentifikasi (Umum)</div>
         <div class="def-grid">
           <div>
             <span class="def-term">MAKANAN BASI</span>
@@ -463,7 +449,7 @@
           </div>
           <div>
             <span class="def-term">KONTAMINASI BAKTERI</span>
-            <span class="def-desc">Salmonella & bakteri patogen lain ditemukan pada sampel makanan.</span>
+            <span class="def-desc">Salmonella & bakteri patogen lain ditemukan pada sampel.</span>
           </div>
           <div>
             <span class="def-term">HIGIENE DAPUR BURUK</span>
@@ -471,7 +457,7 @@
           </div>
           <div>
             <span class="def-term">DISTRIBUSI TERTUNDA</span>
-            <span class="def-desc">Jeda waktu masak ke konsumsi terlalu panjang, makanan rusak di perjalanan.</span>
+            <span class="def-desc">Jeda waktu masak ke konsumsi terlalu panjang.</span>
           </div>
           <div>
             <span class="def-term">DUGAAN SABOTASE</span>
@@ -659,6 +645,674 @@
     document.getElementById('tab-' + id).classList.add('active');
     btn.classList.add('active');
   }
+
+  /* ══════════════════════════════════
+     KERACUNAN — DATA & RENDER
+  ══════════════════════════════════ */
+  const RAW_CASES = `29 September 2025|Aceh|Kabupaten Aceh Utara|SDN 6 Matangkuli|3 Siswa
+24 Januari 2026|Aceh|Kabupaten Aceh Timur|TBA|19 Siswa
+11 Februari 2026|Aceh|Kabupaten Aceh Singkil|TK Bunga Al-Qur'an|33 Santri
+11 Februari 2026|Aceh|Kabupaten Aceh Singkil|Pesantren Modern Darul Mustafa|-
+15 Oktober 2025|Sumatera Utara|Kabupaten Toba|SD Tanding Laguboti|121 Siswa
+15 Oktober 2025|Sumatera Utara|Kabupaten Toba|SMPN 1 Laguboti|-
+31 Oktober 2025|Sumatera Utara|Kabupaten Nias Utara|SD 071027 Onozitoli Sawo|26 Siswa
+9 Februari 2026|Sumatera Utara|Kabupaten Dairi|SMK Swasta HKBP Sidikalang|271 Siswa
+9 Februari 2026|Sumatera Utara|Kabupaten Dairi|SMK Swasta Arina Sidikalang|-
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|TK/SD/MTS/SMP/TBA (tidak spesifik)|122 Siswa
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 9 Kelurahan Ekor Lubuk|29 Siswa
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 10 Tabek Gadang|-
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 7 Kelurahan Ganting|-
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 5 Kelurahan Sigando|-
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SMPN 3 Kelurahan Ekor Lubuk|-
+7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SMKN 2 Kelurahan Ganting|-
+4 Februari 2026|Sumatera Barat|Kabupaten Dharmasraya|SMAN 1 Sungai Rumbai|221 Orang
+4 Februari 2026|Sumatera Barat|Kabupaten Dharmasraya|Pondok Pesantren|-
+18 Februari 2025|Sumatera Selatan|Kabupaten Empat Lawang|SD Negeri 7 Tebing Tinggi|8 Siswa
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 28 Talang Ubi|174 Siswa
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 20 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 14 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SMPN 6 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|MTs Handayani|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|PAUD Marwah|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SMK 1 Handayani|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SMK 2 Agro|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|PAUD Rumah Cinta|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|TK Al Hafidz|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SMKN 2 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 1 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 2 Talang Ubi|-
+5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SMPN 1 Talang Ubi|-
+2 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ilir|SD Negeri 1 Pedamaran|80 Siswa
+2 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ilir|SD Negeri 5 Pedamaran|-
+2 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ilir|SMP Negeri 1 Pedamaran|-
+3 September 2025|Sumatera Selatan|Kabupaten Musi Banyuasin|SDN 3 Mangun Jaya|9 Siswa
+23 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ulu|SMPN 9 Ogan Komering Ulu|12 Siswa
+25 September 2025|Sumatera Selatan|Kota Palembang|SDN 178 Palembang|15 Siswa
+5 November 2025|Sumatera Selatan|Kota Palembang|Pondok Pesantren Ma'had Zaadul Ma'ad|20 Santri
+26 November 2025|Sumatera Selatan|Kota Palembang|SMAN 2 Palembang|23 Siswa
+30 Januari 2026|Sumatera Selatan|Kota Palembang|SMPN 31 Palembang|4 Siswa
+9 Februari 2026|Sumatera Selatan|Kabupaten Ogan Ilir|Pondok Pesantren Al Ittifaqiah Indralaya|15 Santri
+22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SDN 032 Tembilahan|28 Siswa
+22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SDN 008 Tembilahan|-
+22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SD Muhammadiyah|-
+22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SMA Negeri 1 Kota|-
+22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|TK Faturahman|-
+28 Agustus 2025|Riau|Kabupaten Kampar|SDN 006 Langgini|18 Siswa
+23 Januari 2026|Riau|Kabupaten Siak|SMKN 1 Kandis|21 Siswa
+25 September 2025|Kepulauan Riau|Kabupaten Karimun|SMPN 2 Karimun|14 Siswa
+29 September 2025|Kepulauan Riau|Kota Batam|SDN 016 Seilekop|18 Siswa
+11 November 2025|Kepulauan Riau|Kota Batam|MAN 2 Kota Batam|235 Siswa
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|PAUD IT Al-Azhar|539 Siswa
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|PAUD Az-Zahra|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|TK Al Akhlak|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD IT Al Azhar|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD IT Al-Azhar Sukabumi|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD Muhammadiyah Ujung Tanjung|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD Muhammadiyah Ujung Tanjung II|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD Negeri 17 Ujung Tanjung I|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD Negeri 25 Desa Sukabumi|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD IT Suka Bumi|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SMP 05 Lebong|-
+28 Agustus 2025|Bengkulu|Kabupaten Lebong|SMP 16 Lebong|-
+30 Januari 2026|Jambi|Kabupaten Muaro Jambi|TK/SD/SMP/SMA (tidak spesifik)|150 Siswa
+Agustus 2025|Bangka Belitung|Kabupaten Belitung Timur|TBA|TBA
+15 Juli 2025|Lampung|Kabupaten Lampung Utara|SD Soekarno Hatta|Puluhan Siswa
+15 Juli 2025|Lampung|Kabupaten Lampung Utara|SD IT Insan Rhobani|-
+29 Agustus 2025|Lampung|Kabupaten Lampung Utara|SDN 1 Negara Agung|16 Siswa
+29 September 2025|Lampung|Kabupaten Lampung Utara|SMAN 4 Kota Bumi|52 Siswa
+12 Januari 2026|Lampung|Kabupaten Lampung Utara|SDN 3 Sindang Sari|11 Siswa
+6 Agustus 2025|Lampung|Kabupaten Tanggamus|SDN 1 Way Jaha|18 Siswa
+26 Agustus 2025|Lampung|Kabupaten Lampung Timur|Pondok Pesantren Al Islah|40 Santri
+26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 1 Lehan|41 Siswa
+26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 2 Lehan|-
+26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 1 Sukadana|-
+26 September 2025|Lampung|Kabupaten Lampung Timur|SD Catur Swako|-
+26 September 2025|Lampung|Kabupaten Lampung Timur|SMPN PGRI 1 Bumi Agung|-
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|Pondok Pesantren (tidak spesifik)|Ratusan Siswa
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|SD (tidak spesifik)|-
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|SMP (tidak spesifik)|-
+29 Agustus 2025|Lampung|Kota Bandar Lampung|SDN 2 Sukabumi|247 Siswa
+29 Agustus 2025|Lampung|Kota Bandar Lampung|SDN 2 Campang Raya|-
+29 Agustus 2025|Lampung|Kota Bandar Lampung|SMPN 31 Campang Raya|-
+29 Agustus 2025|Lampung|Kota Bandar Lampung|SMKN 5 Sukabumi|-
+11 Februari 2026|Lampung|Kota Bandar Lampung|SDN 4 Sumberjo|87 Orang
+11 Februari 2026|Lampung|Kota Bandar Lampung|SD Al Munawaroh|76 Orang
+11 Februari 2026|Lampung|Kota Bandar Lampung|SMPN 14 Bandar Lampung|43 Orang
+Tidak Disebutkan|Lampung|Kabupaten Lampung Selatan|TBA|27 Siswa
+3 Desember 2025|Lampung|Kabupaten Lampung Selatan|SMPN 2 Kalianda|6 Siswa
+4 September 2025|Lampung|Kota Metro|TBA|12 Siswa
+29 September 2025|Lampung|Kabupaten Tulang Bawang Barat|SDN 06 Penumangan Lama|8 Siswa
+6 Oktober 2025|Lampung|Kabupaten Lampung Tengah|SMA Negeri 1 Punggur|14 Siswa
+3 Desember 2025|Lampung|Kabupaten Way Kanan|SMP (tidak spesifik)|11 Siswa + 1 Guru
+25 Februari 2025|Kalimantan Barat|Kabupaten Kubu Raya|SDN 08 Sungai Raya|5 Siswa
+23 September 2025|Kalimantan Barat|Kabupaten Ketapang|SDN 12 Benua Kayong|25 Siswa
+5 Februari 2026|Kalimantan Barat|Kabupaten Ketapang|SMP Negeri 1 Marau|417 Siswa
+5 Februari 2026|Kalimantan Barat|Kabupaten Ketapang|SMA Negeri 1 Marau|-
+5 Februari 2026|Kalimantan Barat|Kabupaten Ketapang|SMK Negeri 1 Marau|-
+25 September 2025|Kalimantan Barat|Kabupaten Sanggau|MIS Al-Wardah|6 Siswa
+29 September 2025|Kalimantan Barat|Kabupaten Kayong Utara|SMP PGRI 01 Simpang Hilir|9 Siswa
+4 November 2025|Kalimantan Barat|Kabupaten Kapuas Hulu|SD Tahfiz Al-Hidayah|19 Siswa
+4 November 2025|Kalimantan Barat|Kabupaten Kapuas Hulu|SDN 1 Kedamin|-
+19 November 2025|Kalimantan Barat|Kabupaten Landak|SMA Maniamas Ngabang|53 Siswa
+19 November 2025|Kalimantan Barat|Kabupaten Landak|SMK Maniamas Ngabang|-
+19 November 2025|Kalimantan Barat|Kabupaten Landak|SMA Pelita|-
+5 Februari 2026|Kalimantan Barat|Kota Singkawang|MAN Model Singkawang|56 Siswa
+29 September 2025|Kalimantan Tengah|Kota Palangkaraya|SDN 3 Bukit Tunggal|27 Siswa
+13 Januari 2025|Kalimantan Utara|Kabupaten Nunukan|SDN 003 Nunukan Selatan|29 Siswa
+13 Januari 2025|Kalimantan Utara|Kabupaten Nunukan|SMAN 2 Nunukan Selatan|> 30 Siswa
+30 September 2025|Kalimantan Utara|Kabupaten Nunukan|PAUD Ar Rahman, Sei Limau|145 Siswa
+30 September 2025|Kalimantan Utara|Kabupaten Nunukan|MI As Adiyah Tapal Batas|-
+30 September 2025|Kalimantan Utara|Kabupaten Nunukan|SDN 04 Sei Limau|-
+30 September 2025|Kalimantan Utara|Kabupaten Nunukan|SDN 05 Sei Limau|-
+22 September 2025|Kalimantan Utara|Kabupaten Bulungan|SMAN 1 Tanjung Selor|2 Siswa
+25 September 2025|Kalimantan Timur|Kota Balikpapan|SMKN 3 Balikpapan|5 Siswa
+12 Februari 2026|Kalimantan Timur|Kabupaten Penajam Paser Utara|SDN 008 Waru|26 Siswa
+12 Februari 2026|Kalimantan Timur|Kabupaten Penajam Paser Utara|SMAN 2 Penajam Paser Utara|-
+9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|Sekolah Islam Terpadu Assalam|134 Siswa
+9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SD Muhammadiyah|-
+9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SDN 1 Tungkaran|-
+9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SDN 1 Pasayangan|-
+9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SMA IT Assalam|-
+21 Oktober 2025|Kalimantan Selatan|Kota Banjarmasin|SMPN 33 Banjarmasin|40 Siswa
+19 Januari 2025|Banten|Kabupaten Pandeglang|SDN 2 Alaswangi|28 Siswa
+2 September 2025|Banten|Kabupaten Serang|SMPN 1 Kramatwatu|27 Siswa
+September 2025|Banten|Kota Tangerang Selatan|SD (tidak spesifik)|TBA
+16 April 2026|Banten|Kota Cilegon|MTs Al-Inayah|49 Siswa
+29 Agustus 2025|DKI Jakarta|Jakarta Selatan|TBA|3 Siswa
+8 September 2025|DKI Jakarta|Jakarta Utara|TBA|14 Siswa
+8 September 2025|DKI Jakarta|Jakarta Utara|SMPN 277 Jakarta|Puluhan Siswa
+Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
+23 September 2025|DKI Jakarta|Jakarta Utara|SMAN 15 Jakarta|7 Siswa
+25 September 2025|DKI Jakarta|Jakarta Timur|SDN 07 Pulogebang|6 Siswa
+30 September 2025|DKI Jakarta|Jakarta Timur|SDN 01 Gedong|22 Siswa
+29 Oktober 2025|DKI Jakarta|Jakarta Barat|SDN Meruya Selatan 01|20 Siswa
+14 Januari 2025|Jawa Barat|Kabupaten Indramayu|TBA|6 Siswa
+22 Agustus 2025|Jawa Barat|Kabupaten Indramayu|TBA|2 Siswa
+21 April 2025|Jawa Barat|Kabupaten Cianjur|MAN 1 Cianjur|51 Siswa
+21 April 2025|Jawa Barat|Kabupaten Cianjur|SMP PGRI Cianjur|52 Siswa
+20 Agustus 2025|Jawa Barat|Kabupaten Cianjur|Pondok Pesantren Darul Quran|12 Santri
+3 September 2025|Jawa Barat|Kabupaten Cianjur|MTs Islamiyah Sayang|9 Siswa
+11 September 2025|Jawa Barat|Kabupaten Cianjur|SDN Salakawung|36 Siswa
+25 September 2025|Jawa Barat|Kabupaten Cianjur|SDN Taruna Bakti|30 Siswa
+9 Oktober 2025|Jawa Barat|Kabupaten Cianjur|Yayasan Raudhatul Muttaqin|16 Siswa
+27 Januari 2026|Jawa Barat|Kabupaten Cianjur|SDN Wargasari|300 Siswa
+29 April 2025|Jawa Barat|Kota Bandung|SMP Negeri 35 Bandung|342 Siswa + 2 Guru
+1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|Beberapa Sekolah TK|400 Siswa
+1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN 1 Rajapolah|-
+1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN 2 Rajapolah|-
+1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SMPN 1 Rajapolah|-
+18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|SD Cikalong 1|52 Siswa
+18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|PAUD di wilayah Cikalong|-
+18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|Beberapa sekolah lain di Kecamatan Cikalong|-
+2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SMK Negeri Cipatujah|115 Siswa
+2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SMP Negeri 4 Cipatujah|-
+2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|Pondok Pesantren Nursyamsiah|-
+13 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|Posyandu Daerah Manonjaya|11 Balita
+17 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN Margamulya|13 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|TK Bosowa Bina Insani|28 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SD Bosowa Bina Insani|13 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SMP Bosowa Bina Insani|96 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SMA Bosowa Bina Insani|1 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SDN Kukupu 3|8 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SDN Kedung Waringin|7 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SDN Kedung Jaya 1|16 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SDN Kedung Jaya 2|46 Siswa
+7-9 Mei 2025|Jawa Barat|Kota Bogor|SMP Bina Greha|8 Siswa
+14 November 2025|Jawa Barat|Kota Bogor|SDN 2 Batu Tulis|50 Siswa
+14 November 2025|Jawa Barat|Kota Bogor|SDN 3 Batu Tulis|-
+14 November 2025|Jawa Barat|Kota Bogor|SD Lawang Gintung|-
+14 November 2025|Jawa Barat|Kota Bogor|SMK PUI Kota Bogor|-
+31 Juli 2025|Jawa Barat|Kabupaten Kuningan|SMPN 1 Cilimus|30 Siswa
+3 Oktober 2025|Jawa Barat|Kabupaten Kuningan|SMP 1 Luragung|97 Siswa
+3 Oktober 2025|Jawa Barat|Kabupaten Kuningan|SMAN 1 Luragung|103 Siswa
+28 November 2025|Jawa Barat|Kabupaten Kuningan|TBA|74 Siswa
+6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|SDN Puncak Batu|32 Siswa
+6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|MI Cikadu|-
+6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|PAUD di Desa Cipamingkis|-
+22 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|SDN 02 Parakansalak|24 Siswa
+11 September 2025|Jawa Barat|Kabupaten Sukabumi|SMKN 1 Cibadak|69 Siswa
+24 September 2025|Jawa Barat|Kabupaten Sukabumi|SMK Doa Bangsa|32 Siswa
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|PAUD Al Hadi|31 Siswa
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Bojong Kopo|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Gunung Biru|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Loji|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Sangrawayang|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Cibutun|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|MA (tidak spesifik)|-
+14 Agustus 2025|Jawa Barat|Kabupaten Karawang|TBA|82 Siswa
+21 Agustus 2025|Jawa Barat|Kabupaten Bandung|SD Negeri Legok Hayam|12 Siswa
+17 September 2025|Jawa Barat|Kabupaten Garut|SDN 2 Mandalasari|657 Siswa
+17 September 2025|Jawa Barat|Kabupaten Garut|SMP Siti Aisyah|-
+17 September 2025|Jawa Barat|Kabupaten Garut|MA Siti Aisyah|-
+17 September 2025|Jawa Barat|Kabupaten Garut|MA Maarif Cilageni|-
+17 September 2025|Jawa Barat|Kabupaten Garut|SMA Siti Aisyah|-
+30 September 2025|Jawa Barat|Kabupaten Garut|SDN 3 Talagasari|307 Siswa
+30 September 2025|Jawa Barat|Kabupaten Garut|SMPN 1 Kadungora|-
+30 September 2025|Jawa Barat|Kabupaten Garut|SMP PGRI Kadungora|-
+30 September 2025|Jawa Barat|Kabupaten Garut|SMA Annisa Kadungora|-
+22 September 2025|Jawa Barat|Kabupaten Bandung Barat|SD Negeri Cipari|1.333 Siswa
+22 September 2025|Jawa Barat|Kabupaten Bandung Barat|MTs Darul Fiqri|-
+22 September 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Pembangunan Bandung Barat|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|TK Nurul Saadah|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|SMP Ciparai|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Karya Perjuangan|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|MTs Manarul Huda|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 1 Cihampelas|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|MTs Al Mukhtariyah|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|SMKN 1 Cihampelas|-
+24 September 2025|Jawa Barat|Kabupaten Bandung Barat|MA Al Mukhtariyah|-
+14 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMPN 1 Cisarua|518 Siswa
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 1 Garuda|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SD Negeri 1 Barukai|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMKN 1 Cisarua|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMP Karya Prestasi Mandiri|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Widya Karya|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|Pesantren Bani Sulaiman|-
+23 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMPN 1 Lembang|30 Siswa
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 1 Cibodas|236 Siswa
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 2 Cibodas|-
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 1 Sutenjaya|-
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN Buahbatu|-
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMPN 4 Lembang|-
+28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Putra Nasional Cibodas|-
+11 November 2025|Jawa Barat|Kabupaten Bandung Barat|SMP Bina Karya|21 Siswa
+25 September 2025|Jawa Barat|Kabupaten Subang|SD Rawalele|11 Siswa
+25 September 2025|Jawa Barat|Kabupaten Sumedang|SMK Win Ujungjaya|164 Siswa
+25 September 2025|Jawa Barat|Kabupaten Sumedang|SMK Rimba Bahari Situraja|-
+25 September 2025|Jawa Barat|Kabupaten Sumedang|SMA Negeri 1 Tomo|-
+26 September 2025|Jawa Barat|Kabupaten Bogor|SMPN 1 Jonggol|4 Siswa
+1 Oktober 2025|Jawa Barat|Kabupaten Bogor|SDN 02 Pasir Angin|3 Siswa
+16 Oktober 2025|Jawa Barat|Kabupaten Bogor|SDN Ciangsana 02 Bogor|7 Siswa
+29 September 2025|Jawa Barat|Kabupaten Ciamis|SMPN 4 Pamarican|52 Siswa
+3 Oktober 2025|Jawa Barat|Kabupaten Ciamis|SDN 1 Sindang Sari|10 Siswa
+1 Oktober 2025|Jawa Barat|Kabupaten Pangandaran|MI Attarbiyah Leuwiliang|8 Siswa
+1 Oktober 2025|Jawa Barat|Kota Banjar|SMPN 3 Banjar|79 Siswa
+2 Oktober 2025|Jawa Barat|Kota Bekasi|SDN Kota Baru 3 Bekasi|6 Siswa
+22 Oktober 2025|Jawa Barat|Kota Cirebon|SDN Kesenden|13 Siswa
+4 November 2025|Jawa Barat|Kabupaten Cirebon|SDN 2 Setu Wetan|20 Siswa
+17 November 2025|Jawa Barat|Kota Sukabumi|MI Al Ihsan|28 Siswa
+4 Desember 2025|Jawa Barat|Kabupaten Majalengka|TBA|42 Orang
+16 Januari 2025|Jawa Tengah|Kabupaten Sukoharjo|SDN Dukuh 03 Sukoharjo|50 Siswa
+14 April 2025|Jawa Tengah|Kabupaten Batang|SDN 5 Proyonanggan|60 Siswa
+14 April 2025|Jawa Tengah|Kabupaten Batang|TK Islam Al Karomah|3 Siswa
+31 Oktober 2025|Jawa Tengah|Kabupaten Batang|SMK Kandeman|800 Siswa
+24 April 2025|Jawa Tengah|Kabupaten Karanganyar|SD Wonorejo|2 Siswa + 1 Kepala Sekolah
+3 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TBA|168 Siswa
+9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TK Nglebak 1|105 Siswa
+9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TK Nglebak 2|-
+9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SD Negeri 2 Nglebak|-
+9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SDN 3 Ngeblak|-
+9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMP Negeri 1 Tawangmangu|-
+13 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMPN 1 Colomadu|17 Siswa
+15 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMPN 1 Karanganyar|Ratusan Siswa
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri 3 Gemolong|1 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri 4 Gemolong|26 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri Gemolong|66 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SMP Negeri 1 Gemolong|97 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SMP Negeri 2 Gemolong|61 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SMP Negeri 3 Gemolong|1 Orang
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|TBA|114 Orang
+10 September 2025|Jawa Tengah|Kabupaten Klaten|Siswa SD (tidak spesifik)|105 Siswa
+8 Oktober 2025|Jawa Tengah|Kabupaten Klaten|SMPN 1 Wedi|49 Siswa
+11 September 2025|Jawa Tengah|Kabupaten Wonogiri|Madrasah Ibtidaiyah Negeri Wonogiri|23 Siswa
+12 September 2025|Jawa Tengah|Kabupaten Wonogiri|SMAN 2 Wonogiri|110 Siswa
+30 September 2025|Jawa Tengah|Kabupaten Wonogiri|Ponpes Baitul Quran|131 Siswa
+12 Januari 2026|Jawa Tengah|Kabupaten Wonogiri|SMAN 1 Slogohimo|206 Siswa
+22 September 2025|Jawa Tengah|Kota Salatiga|MAN Kota Salatiga|7 Siswa
+3 Oktober 2025|Jawa Tengah|Kota Salatiga|SMP Negeri 8 Salatiga|192 Siswa
+6 Oktober 2025|Jawa Tengah|Kota Salatiga|TBA|12 Siswa
+23 September 2025|Jawa Tengah|Kabupaten Jepara|TK Melati Banjaran|35 Siswa
+23 September 2025|Jawa Tengah|Kabupaten Jepara|Kelompok Bermain Darul Karomah Srikandang|-
+23 September 2025|Jawa Tengah|Kabupaten Jepara|MI Matholiul Huda Srikandang|-
+23 September 2025|Jawa Tengah|Kabupaten Jepara|SDN 1 Banjaran|-
+24 September 2025|Jawa Tengah|Kabupaten Rembang|SMPN 1 Kragan|173 Siswa
+22 September 2025|Jawa Tengah|Kabupaten Banyumas|TK|408 Siswa
+22 September 2025|Jawa Tengah|Kabupaten Banyumas|SDN Kediri|-
+22 September 2025|Jawa Tengah|Kabupaten Banyumas|SDN Pangebatan|-
+29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD 1 Sudagaran|94 Siswa
+29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD 2 Sudagaran|-
+29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD 3 Sudagaran|-
+29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD Muhammadiyah|-
+25 September 2025|Jawa Tengah|Kabupaten Kebumen|SDN Tegalretno|176 Siswa
+25 September 2025|Jawa Tengah|Kabupaten Kebumen|Madrasah Wathoniyah Islamiyah|-
+30 September 2025|Jawa Tengah|Kabupaten Semarang|SDN 01 Ungaran|20 Siswa
+30 September 2025|Jawa Tengah|Kabupaten Temanggung|SMAN 2 Temanggung|414 Siswa
+30 September 2025|Jawa Tengah|Kabupaten Temanggung|SMAN 3 Temanggung|-
+3 Oktober 2025|Jawa Tengah|Kabupaten Purworejo|SMPN 8 Purworejo|134 Siswa
+3 Oktober 2025|Jawa Tengah|Kabupaten Purworejo|SMAN 3 Purworejo|-
+18 November 2025|Jawa Tengah|Kabupaten Magelang|Pondok Pesatren Nurul Ali|112 Santri
+26 November 2025|Jawa Tengah|Kabupaten Blora|SMPN 1 Blora|810 Siswa
+26 November 2025|Jawa Tengah|Kabupaten Blora|SMP Katolik Blora|-
+26 November 2025|Jawa Tengah|Kabupaten Blora|SMP Kristen Blora|-
+26 November 2025|Jawa Tengah|Kabupaten Kendal|SMPN 1 Kendal|17 Siswa
+11 Desember 2025|Jawa Tengah|Kabupaten Grobogan|Desa Putatsari|23 Orang
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|TK Ngroto|803 Siswa
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN Trisari|-
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN Glapan|-
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN Penadaran|-
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SMP Miftahul Huda|-
+10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SMK Miftahul Huda|-
+30 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN 2 Pulongrambe|8 Siswa
+30 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN 3 Mayahan|-
+8 Januari 2026|Jawa Tengah|Kota Semarang|SMKN 11 Semarang|75 Siswa
+13 Januari 2026|Jawa Tengah|Kabupaten Pekalongan|SDN 01 Kedungwuni|15 Siswa
+22 Januari 2026|Jawa Tengah|Kota Magelang|SMPN 10 Kota Magelang|75 Siswa + 5 Guru
+29 Januari 2026|Jawa Tengah|Kabupaten Kudus|SMAN 2 Kudus|600 Siswa
+9 Februari 2026|Jawa Tengah|Kabupaten Pati|SMKN 4 Pati|22 Siswa
+17 Juni 2025|DIY|Kabupaten Kulon Progo|TK Aisyiyah Bustanul Athfal Kasatriyan|10 Siswa
+31 Juli 2025|DIY|Kabupaten Kulon Progo|SMPN 2 Wates|497 Siswa
+31 Juli 2025|DIY|Kabupaten Kulon Progo|SMP Muhammadiyah 2 Wates|-
+31 Juli 2025|DIY|Kabupaten Kulon Progo|SD Triharjo|-
+31 Juli 2025|DIY|Kabupaten Kulon Progo|SD Sogan|-
+20 Januari 2025|DIY|Kabupaten Kulon Progo|PAUD (tidak spesifik)|104 Siswa
+20 Januari 2025|DIY|Kabupaten Kulon Progo|TK (tidak spesifik)|-
+20 Januari 2025|DIY|Kabupaten Kulon Progo|SD (tidak spesifik)|-
+13 Agustus 2025|DIY|Kabupaten Sleman|SMP Muhammadiyah 1 Mlati|379 Siswa
+13 Agustus 2025|DIY|Kabupaten Sleman|SMP Muhammadiyah 3 Mlati|-
+13 Agustus 2025|DIY|Kabupaten Sleman|SMP Negeri 3 Mlati|-
+13 Agustus 2025|DIY|Kabupaten Sleman|SMP Pamungkas Mlati|-
+27 Agustus 2025|DIY|Kabupaten Sleman|SMPN 3 Berbah|135 Siswa + 2 Guru
+24 Oktober 2025|DIY|Kabupaten Sleman|SD Jombor Lor|300 Siswa
+24 Oktober 2025|DIY|Kabupaten Sleman|SMP Negeri 2 Mlati|-
+24 Oktober 2025|DIY|Kabupaten Sleman|MAN 3 Yogyakarta|-
+3 September 2025|DIY|Kabupaten Gunungkidul|MTsN Wonosari|5 Siswa
+15 September 2025|DIY|Kabupaten Gunungkidul|SDN Sumberejo|19 Siswa
+15 September 2025|DIY|Kabupaten Gunungkidul|SMPN 2 Semin|-
+15 September 2025|DIY|Kabupaten Gunungkidul|SMPS Budi Mulia Semin|-
+3 Oktober 2025|DIY|Kabupaten Gunungkidul|SD Negeri 03 Piyaman|6 Siswa
+28 Oktober 2025|DIY|Kabupaten Gunungkidul|SMPN 1 Saptosari|695 Siswa
+28 Oktober 2025|DIY|Kabupaten Gunungkidul|SMKN 1 Saptosari|-
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SD Sumbergiri|121 Siswa
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SDN Mendak 1|-
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMPN 1 Ponjong|-
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMA Pembangunan 3 Ponjong|-
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMK Ma'Arif|-
+29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMK Muhammadiyah|-
+3 November 2025|DIY|Kabupaten Gunungkidul|TBA|547 Siswa
+23 Januari 2026|DIY|Kabupaten Gunungkidul|SMP Muhammadiyah Playen|48 Siswa + 9 Guru + 1 Kepala Sekolah
+15 Oktober 2025|DIY|Kota Yogyakarta|SMAN 1 Yogyakarta|426 Siswa
+15 Oktober 2025|DIY|Kota Yogyakarta|SMA Muhammadiyah 7 Yogyakarta|65 Siswa
+31 Oktober 2025|DIY|Kabupaten Bantul|SD 2 Bakulan|237 Siswa
+31 Oktober 2025|DIY|Kabupaten Bantul|SMPN 1 Jetis|-
+31 Oktober 2025|DIY|Kabupaten Bantul|SMPN 3 Jetis|-
+31 Oktober 2025|DIY|Kabupaten Bantul|SMP Muhammadiyah Pulokasang|-
+31 Oktober 2025|DIY|Kabupaten Bantul|SMAN 1 Jetis|-
+2 Oktober 2024|Jawa Timur|Kabupaten Nganjuk|SDN Banaran I|7 Siswa
+4 September 2025|Jawa Timur|Kabupaten Situbondo|SMAN 1 Panji|232 Siswa
+9 September 2025|Jawa Timur|Kabupaten Pamekasan|Lembaga Pendidikan Al-Falah|37 Siswa
+9 September 2025|Jawa Timur|Kabupaten Pamekasan|Lembaga Pendidikan Al-Amin|-
+17 September 2025|Jawa Timur|Kabupaten Pamekasan|SDN Pasanggar 1 Pegantenan|8 Siswa
+15 Oktober 2025|Jawa Timur|Kabupaten Pamekasan|SDN Toronan 1|9 Siswa
+6 November 2025|Jawa Timur|Kabupaten Pamekasan|MTS Al-Ula|17 Siswa
+6 November 2025|Jawa Timur|Kabupaten Pamekasan|MA Al Islamiyah Blumbungan|3 Siswa
+17 September 2025|Jawa Timur|Kabupaten Lamongan|SMAN 2 Lamongan|18 Siswa
+24 September 2025|Jawa Timur|Kabupaten Bojonegoro|SDN Semanding|7 Siswa
+1 Oktober 2025|Jawa Timur|Kabupaten Bojonegoro|SMAN 1 Kedungadem|544 Siswa
+2 Oktober 2025|Jawa Timur|Kabupaten Bojonegoro|SD Negeri Tumbrasanom|7 Siswa
+2 Oktober 2025|Jawa Timur|Kabupaten Bojonegoro|MTs Plus Nabawi|6 Siswa
+28 November 2025|Jawa Timur|Kabupaten Bojonegoro|Pondok Pesantren Al Falah|30 Santri
+24 September 2025|Jawa Timur|Kabupaten Tuban|SMKN 1 Palang|6 Siswa
+14 Oktober 2025|Jawa Timur|Kabupaten Tuban|SMKN Tambakboyo|8 Siswa
+27 Januari 2026|Jawa Timur|Kabupaten Tuban|SMPN 1 Montong|14 Siswa
+25 September 2025|Jawa Timur|Kota Batu|SMPN 1 Kota Batu|12 Siswa
+25 September 2025|Jawa Timur|Kota Batu|SMAN 1 Kota Batu|-
+26 September 2025|Jawa Timur|Kabupaten Jember|SDN 05 Sidomekar|16 Siswa
+5 Februari 2026|Jawa Timur|Kabupaten Jember|SMP Negeri 1 Umbulsari|112 Orang
+1 Oktober 2025|Jawa Timur|Kabupaten Ngawi|SMK Negeri 1 Sine|51 Siswa
+1 Oktober 2025|Jawa Timur|Kabupaten Ngawi|MTs Muhammadiyah Sine|5 Siswa
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 2 Jenggrik|87 Siswa
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 6 Jenggrik|-
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 5 Gemarang|-
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SMPN 2 Kedunggalar|-
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SMAN 1 Kedunggalar|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|Ponpes Absoru Sunah|220 Siswa
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|Ponpes Miftahul Janah|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 2 Mantingan|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 3 Mantingan|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 5 Mantingan|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SD (tidak spesifik)|-
+13 Februari 2026|Jawa Timur|Kabupaten Ngawi|Ponpes Al Hijrah|67 Santri
+13 Oktober 2025|Jawa Timur|Kabupaten Tulungagung|SDN 1 Tanggung|68 Siswa
+13 Oktober 2025|Jawa Timur|Kabupaten Tulungagung|SMPN 1 Boyolangu|-
+20 Januari 2026|Jawa Timur|Kabupaten Tulungagung|SMKN 3 Boyolangu|123 Siswa
+22 Januari 2026|Jawa Timur|Kabupaten Tulungagung|SMK Sore Tulungagung|15 Siswa
+10 Februari 2026|Jawa Timur|Kabupaten Tulungagung|SDN 3 Bungur|24 Siswa
+17 Oktober 2025|Jawa Timur|Kabupaten Magetan|SDN 2 Kediren|12 Siswa
+17 Oktober 2025|Jawa Timur|Kabupaten Magetan|MI Nurul Dholam|-
+23 Oktober 2025|Jawa Timur|Kabupaten Banyuwangi|MAN 1 Banyuwangi|112 Siswa
+24 Oktober 2025|Jawa Timur|Kabupaten Banyuwangi|SMPN 3 Kalipuro|133 Siswa
+24 Oktober 2025|Jawa Timur|Kabupaten Banyuwangi|MA Nurul Khairoh|-
+24 Oktober 2025|Jawa Timur|Kabupaten Banyuwangi|SMA NU Gombengsari|-
+23 Oktober 2025|Jawa Timur|Kabupaten Malang|MTs Al-Khalifah|38 Siswa
+11 Februari 2026|Jawa Timur|Kabupaten Malang|MI Al Maarif 9|9 Siswa
+27 November 2025|Jawa Timur|Kabupaten Madiun|SDN Klecorejo|49 Siswa
+27 November 2025|Jawa Timur|Kabupaten Madiun|SDN 1 Darmorejo|-
+27 November 2025|Jawa Timur|Kabupaten Madiun|SDN 2 Kebonagung|-
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SDN 1 Sukorejo|77 Siswa
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SDN 2 Sukorejo|-
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMP (tidak spesifik)|-
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMA (tidak spesifik)|-
+10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|Ponpes An-Nur|780 Siswa
+10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|Ponpes Al-Hidayah|-
+10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|SMPN 2 Kutorejo|-
+15 Januari 2026|Jawa Timur|Kota Mojokerto|SDN 5 Wates|TBA
+15 Januari 2026|Jawa Timur|Kota Mojokerto|SDN 6 Wates|-
+15 Januari 2026|Jawa Timur|Kota Mojokerto|SMAN 2 Mojokerto|-
+2 Februari 2026|Jawa Timur|Kota Surabaya|SDN 1 Babat Jerawat|27 Siswa
+Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SD (tidak spesifik)|157 Siswa
+Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SMP (tidak spesifik)|-
+23 April 2025|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN Repuk Tunjang|5 Siswa
+17 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN 1 Darmaji|38 Siswa
+17 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|MI Hidayatuslohin|-
+19 Agustus 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|SMK Karya Adi Husada|Belasan Siswa
+13 Oktober 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|MA Ma'arif Pondok Pesantren Baitul Rahman|51 Santri
+17 Oktober 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|SMP Islam Terpadu Lukman Hakim Pohgading|23 Siswa
+26 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Timur|TBA|Puluhan Siswa
+3 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|SDN 1 Selat|17 Siswa
+3 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|SDN 2 Nyur Lembang|2 Siswa
+24 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|MTS (tidak spesifik)|26 Santri
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MTSN 2 Sumbawa|94 Siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|SDN Lamenta|1 Siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MIN 3 Sumbwa|20 Siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MAN 3 Sumbawa|11 Siswa
+12 Oktober 2025|Nusa Tenggara Barat|Kota Bima|SDN 11 Kota Bima|23 Siswa
+12 Oktober 2025|Nusa Tenggara Barat|Kota Bima|SDN 42 Kota Bima|-
+31 Oktober 2025|Nusa Tenggara Barat|Kabupaten Sumbawa Barat|Pondok Pesantren Himatul Ummah|71 Siswa
+31 Oktober 2025|Nusa Tenggara Barat|Kabupaten Sumbawa Barat|SMPN 4 Brang Rea|-
+11 Februari 2026|Nusa Tenggara Barat|Kabupaten Lombok Utara|SDN 2 Malaka|30 Siswa
+11 Februari 2026|Nusa Tenggara Barat|Kabupaten Lombok Utara|SDN 4 Malaka|-
+18 Februari 2025|Nusa Tenggara Timur|Kabupaten Sumba Timur|SDK Andaluri|29 Siswa
+22 Juli 2025|Nusa Tenggara Timur|Kota Kupang|SMP Negeri 08 Kota Kupang|186 Siswa
+23 Juli 2025|Nusa Tenggara Timur|Kota Kupang|SD Negeri Tenau|13 Siswa
+24 September 2025|Nusa Tenggara Timur|Kota Kupang|SD Inpres Liliba|11 Siswa
+23 Juli 2025|Nusa Tenggara Timur|Kabupaten Kupang|SMA Negeri 1 Taebenu|2 Siswa
+23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMAN 1 Kota Tambolaka|58 Siswa
+23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMKN 2 Tambolaka|7 Siswa
+23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMK Don Bosco|10 Siswa
+10 November 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMA Manda Elu|252 Siswa
+10 November 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMAK Alfonsus Waitabula|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD GMIT Soe 2|384 Siswa
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD Oenasi|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD Inpres Soe|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD Advent|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Posyandu Kota Baru|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Posyandu Bhayangkari|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Pasyandu Nonohonis|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Posyandu Maleset|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SMA Karya|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Paud Cendana|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|TK Et Labora|-
+3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|TK Oenasi|-
+26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SD Trikora|Ratusan Siswa
+26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SD Inpres Waturutu|-
+26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SDK Regina Pacis|-
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|PAUD Kensulat|12 Siswa
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDK Kefamenanu|-
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDN Gua Aplasi|-
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDK Peboko|-
+29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SDI Golo Welu 2|132 Siswa
+29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SDI Golo Bombong|-
+29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMPN 2 Kuwus|-
+29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMAN 1 Kuwus|-
+29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMKN 1 Kuwus|-
+11 Februari 2026|Nusa Tenggara Timur|Kabupaten Manggarai|Warga Kecamatan Satar Mese|131 Orang
+7 Oktober 2025|Gorontalo|Kota Gorontalo|SMK Tridarma|11 Siswa
+27 November 2025|Sulawesi Utara|Kabupaten Minahasa Utara|SMPN 2 Airmadidi|182 Siswa
+26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMP Kristen 1 Woloan|197 Siswa
+26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMK Negeri 1 Tomohon|-
+26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMK Sta. Familia Tomohon|-
+26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMA Karitas Tomohon|-
+24 September 2025|Sulawesi Barat|Kabupaten Mamuju|SDN Taan Galung|25 Siswa
+24 September 2025|Sulawesi Barat|Kabupaten Mamuju|SMP Negeri 1 Tapalang|-
+21 Oktober 2025|Sulawesi Barat|Kabupaten Mamuju|MTS Darus Qur'an Nur Hadis Nahdatul Waton Gentungan|26 Orang
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Desa Tubo|61 Warga
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Tubo Tengah|-
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Tubo Selatan|-
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Onang Utara|-
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Tubo Poang|-
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Bonde-bonde|-
+12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Onang|-
+14 Februari 2026|Sulawesi Barat|Kabupaten Polewali Mandar|SDN 10 Paku|21 Orang
+27 Agustus 2025|Sulawesi Tengah|Kota Palu|MTs Sis Al-Jufri Tatura|45 Siswa
+27 Agustus 2025|Sulawesi Tengah|Kota Palu|SMK Bina Potensi|100 Siswa
+16 September 2025|Sulawesi Tengah|Kota Palu|SDN Inpres Boyaoge|6 Siswa
+16 September 2025|Sulawesi Tengah|Kabupaten Parigi Moutong|SDK Toboli Barat|18 Siswa
+25 September 2025|Sulawesi Tengah|Kabupaten Parigi Moutong|SMP Negeri 2 Taopa|27 Siswa
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Inpres Tompudau|338 Siswa
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Pembina|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Saiyong|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|MTS Alkhairat Salakan|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMP Negeri 1 Tinangkung|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMA Negeri 1 Tinangkung|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMK Negeri 1 Tinangkung|-
+11 Oktober 2025|Sulawesi Tengah|Kabupaten Banggai|SMAN 1 Moilong|123 Siswa
+11 Desember 2025|Sulawesi Tengah|Kabupaten Tojo Una Una|SDN Tampanombo|5 Siswa
+28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|TK Amanah|141 Siswa
+28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 1 Bunobogu|-
+28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 3 Bunobogu|-
+28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 7 Bunobogu|-
+28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SMPN 5 Bunobogu|-
+26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Kapunrengan|10 Siswa
+26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Bonto Ba'do|1 Siswa
+26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Lengkese|1 Siswa
+8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SD Negeri 13 Kassiloe|74 Siswa
+8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SMP 5 Labakkang|-
+8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SMA 13 Pangkep Boarding School|-
+23 April 2025|Sulawesi Tenggara|Kabupaten Bombana|SDN 33 Kasipute|13 Siswa
+11 September 2025|Sulawesi Tenggara|Kabupaten Buton|SDN 55 Buton|Puluhan Siswa
+16 September 2025|Sulawesi Tenggara|Kota Baubau|SMAN 7 Baubau|37 Siswa
+16 September 2025|Sulawesi Tenggara|Kota Baubau|SD Hidayatullah|-
+26 September 2025|Sulawesi Tenggara|Kabupaten Konawe|Siswa SDIT|16 Siswa
+26 September 2025|Sulawesi Tenggara|Kabupaten Konawe|SMKN 1 Unaaha|-
+16 Desember 2025|Sulawesi Tenggara|Kabupaten Buton Tengah|Warga Kec. Mawasangka Tengah|117 Orang
+Januari 2026|Sulawesi Tenggara|Kota Kendari|TBA|66 Anak
+22 Juli 2025|Maluku Utara|Kota Ternate|SMKN 5 Kota Ternate|17 Siswa
+6 November 2025|Maluku Utara|Kota Ternate|SDN 65 Kota Ternate|25 Siswa
+6 November 2025|Maluku Utara|Kota Ternate|SD Negeri 56 Jambula|26 Siswa
+11 September 2025|Maluku|Kabupaten Maluku Barat Daya|SMPN 1 Babar Barat|40 Siswa
+18 September 2025|Maluku|Kota Tual|SDN 19 Kota Tual|17 Siswa
+19 September 2025|Maluku|Kota Ambon|SD Inpres 35 Passo|16 Siswa
+20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|TK Cemara|236 Siswa
+20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|SD Inpres Talaga Ratu|-
+20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|MIN 2 Seram Bagian Barat|-
+21 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|SMA Negeri 1 Kairatu|-
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SD YPK Alfa Omega|86 Siswa
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SDN 29 Raja Ampat|-
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMP YPK Alfa Omega|-
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMPN 14 Raja Ampat|-
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|MTS Language Insan Mandiri|-
+1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMK Bukit Zaitun|-
+30 Juli 2025|Papua Barat|Kabupaten Manokwari|SD Negeri 45 Arowi|13 Siswa
+30 Juli 2025|Papua Barat|Kabupaten Manokwari|SMP Negeri 13 Manokwari|-
+24 November 2025|Papua Barat|Kabupaten Manokwari|SMAN 2 Manokwari|171 Siswa`;
+
+  const ID_MONTHS = {
+    'januari':0,'februari':1,'maret':2,'april':3,'mei':4,'juni':5,
+    'juli':6,'agustus':7,'september':8,'oktober':9,'november':10,'desember':11,
+  };
+  const SHORT_MONTH = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agt','Sep','Okt','Nov','Des'];
+
+  function parseCaseDate(s) {
+    if (!s || /disebutkan/i.test(s)) return { date: null, label: 'Tidak\ndisebutkan' };
+    const cleaned = s.replace(/^Awal\s+/i,'').replace(/^Akhir\s+/i,'');
+    let m = cleaned.match(/(\d+)(?:\s*[-–]\s*\d+)?\s+(\w+)\s+(\d{4})/);
+    if (m) {
+      const day = +m[1], mo = ID_MONTHS[m[2].toLowerCase()] ?? 0, yr = +m[3];
+      return { date: new Date(yr, mo, day), label: `${day}\n${SHORT_MONTH[mo]} ${yr}` };
+    }
+    m = cleaned.match(/(\w+)\s+(\d{4})/);
+    if (m) {
+      const mo = ID_MONTHS[m[1].toLowerCase()] ?? 0, yr = +m[2];
+      return { date: new Date(yr, mo, 1), label: `${SHORT_MONTH[mo]}\n${yr}` };
+    }
+    return { date: null, label: s };
+  }
+
+  function parseVictims(s) {
+    if (!s || s === '-' || /^tba$/i.test(s)) return { num: 0, known: false, label: '?' };
+    if (/puluhan/i.test(s))  return { num: 30,  known: false, label: 'Puluhan', unit: 'siswa' };
+    if (/belasan/i.test(s))  return { num: 15,  known: false, label: 'Belasan', unit: 'siswa' };
+    if (/ratusan/i.test(s))  return { num: 200, known: false, label: 'Ratusan', unit: 'siswa' };
+    const nums = (s.replace(/\./g,'').match(/\d+/g) || []).map(n => parseInt(n,10));
+    const total = nums.reduce((a,b) => a+b, 0);
+    let unit = 'orang';
+    if (/siswa/i.test(s))   unit = 'siswa';
+    else if (/santri/i.test(s)) unit = 'santri';
+    else if (/balita/i.test(s)) unit = 'balita';
+    else if (/anak/i.test(s))   unit = 'anak';
+    else if (/warga/i.test(s))  unit = 'warga';
+    return { num: total, known: total > 0, label: total > 0 ? total.toLocaleString('id-ID') : '?', unit };
+  }
+
+  function parseCases(raw) {
+    const lines = raw.trim().split('\n');
+    const incidents = [];
+    let cur = null;
+    for (const ln of lines) {
+      const p = ln.split('|').map(s => s.trim());
+      if (p.length < 5) continue;
+      const [date, prov, regency, school, victims] = p;
+      if (victims === '-' || victims === '') {
+        if (cur) cur.schools.push(school);
+      } else {
+        if (cur) incidents.push(cur);
+        cur = { dateRaw: date, prov, regency, schools: [school], victimsRaw: victims };
+      }
+    }
+    if (cur) incidents.push(cur);
+    return incidents.map(i => {
+      const d = parseCaseDate(i.dateRaw);
+      const v = parseVictims(i.victimsRaw);
+      return { ...i, date: d.date, dateLabel: d.label, victims: v };
+    });
+  }
+
+  const CASES = parseCases(RAW_CASES)
+    .sort((a,b) => (b.date?.getTime() || 0) - (a.date?.getTime() || 0));
+
+  const totalVictims    = CASES.reduce((s,c) => s + c.victims.num, 0);
+  const totalSchools    = CASES.reduce((s,c) => s + c.schools.length, 0);
+  const provinces       = [...new Set(CASES.map(c => c.prov))].sort();
+
+  E('kVictims').textContent   = totalVictims.toLocaleString('id-ID') + '+';
+  E('kIncidents').textContent = CASES.length.toLocaleString('id-ID');
+  E('kProvinces').textContent = provinces.length;
+  E('kSchools').textContent   = totalSchools.toLocaleString('id-ID');
+
+  const filterEl = E('caseFilter');
+  provinces.forEach(p => {
+    const o = document.createElement('option');
+    o.value = p; o.textContent = p;
+    filterEl.appendChild(o);
+  });
+
+  const PAGE_SIZE = 30;
+  let curFilter = '';
+  let shown = PAGE_SIZE;
+
+  function renderCases() {
+    const list = E('caseList');
+    const more = E('caseMore');
+    const cnt  = E('caseCount');
+    const filtered = curFilter ? CASES.filter(c => c.prov === curFilter) : CASES;
+
+    cnt.textContent = `${filtered.length.toLocaleString('id-ID')} insiden${curFilter ? ' · ' + curFilter : ''}`;
+
+    const slice = filtered.slice(0, shown);
+    list.innerHTML = slice.map(c => {
+      const unkClass = c.victims.known ? '' : ' unk';
+      const schoolsHtml = c.schools
+        .map(s => `<li>${escapeHtml(s)}</li>`).join('');
+      return `<div class="case-row${unkClass}">
+        <div class="case-date">${escapeHtml(c.dateLabel).replace(/\n/g,'<br>')}</div>
+        <div class="case-loc">
+          <span class="case-prov">${escapeHtml(c.prov)} · ${escapeHtml(c.regency)}</span>
+          <ul class="case-schools">${schoolsHtml}</ul>
+        </div>
+        <div class="case-vic${unkClass}">${escapeHtml(c.victims.label)}<small>${escapeHtml(c.victims.unit || '')}</small></div>
+      </div>`;
+    }).join('');
+
+    more.style.display = shown < filtered.length ? 'block' : 'none';
+    more.textContent = shown < filtered.length
+      ? `Tampilkan lebih banyak (${filtered.length - shown} tersisa)` : '';
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+  }
+
+  filterEl.addEventListener('change', e => {
+    curFilter = e.target.value;
+    shown = PAGE_SIZE;
+    renderCases();
+  });
+  E('caseMore').addEventListener('click', () => {
+    shown += PAGE_SIZE;
+    renderCases();
+  });
+
+  renderCases();
 
   requestAnimationFrame(update);
 </script>
