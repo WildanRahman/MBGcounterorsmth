@@ -188,6 +188,22 @@
   .divider{height:1px;background:var(--border);margin:20px 0 16px;}
   .src-note{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:12px;}
 
+  /* ── CASE LIST ── */
+  .case-list{display:flex;flex-direction:column;gap:6px;text-align:left;}
+  .case-row{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;
+    background:var(--card2);border:1px solid var(--border);border-left:2px solid var(--red);
+    padding:10px 14px;}
+  .case-date{font-family:var(--mono);font-size:9px;color:var(--dim);letter-spacing:1px;
+    line-height:1.3;}
+  .case-loc{font-family:var(--mono);font-size:11px;color:var(--text);line-height:1.4;}
+  .case-loc .case-prov{color:var(--muted);font-size:9px;display:block;letter-spacing:1px;
+    text-transform:uppercase;margin-top:2px;}
+  .case-vic{font-family:var(--display);font-size:20px;color:var(--red);
+    text-shadow:0 0 8px var(--red-g);line-height:1;font-variant-numeric:tabular-nums;
+    text-align:right;}
+  .case-vic small{font-family:var(--mono);font-size:8px;color:var(--muted);
+    display:block;letter-spacing:1px;margin-top:3px;text-shadow:none;}
+
   /* ── FOOTER ── */
   footer{text-align:center;padding:28px 20px;font-family:var(--mono);font-size:9px;
     color:var(--muted);letter-spacing:2px;border-top:1px solid var(--border);line-height:2.5;}
@@ -234,6 +250,8 @@
     .big-num{font-size:22px;}
     .visit-pop{bottom:10px;right:10px;left:10px;max-width:none;min-width:0;}
     .visit-reopen{bottom:10px;right:10px;}
+    .case-row{grid-template-columns:1fr auto;gap:8px;}
+    .case-date{grid-column:1 / -1;}
   }
 </style>
 </head>
@@ -280,16 +298,6 @@
       <div class="tb"><span class="tb-val" id="mins">00</span><span class="tb-lbl">MIN</span></div>
       <div class="tb-sep">:</div>
       <div class="tb"><span class="tb-val" id="secs">00</span><span class="tb-lbl">DTK</span></div>
-    </div>
-  </div>
-
-  <!-- ══ PANEL 3: DATA PROGRAM ══ -->
-  <div class="panel">
-    <div class="sec-label">Data Program MBG — per Desember 2025</div>
-    <div class="fact-grid">
-      <div class="fact-card"><span class="fact-val">50,7 Jt</span><span class="fact-lbl">Penerima manfaat aktif</span></div>
-      <div class="fact-card"><span class="fact-val">17.555</span><span class="fact-lbl">Satuan Pelayanan (SPPG)</span></div>
-      <div class="fact-card"><span class="fact-val">1,4 Miliar</span><span class="fact-lbl">Porsi dibagikan (s.d. Okt 2025)</span></div>
     </div>
   </div>
 
@@ -376,14 +384,109 @@
   <!-- ══ TAB: KERACUNAN ══ -->
   <div class="tab-content" id="tab-keracunan">
     <div class="tab-panel">
-      <div class="coming-soon">
-        <div class="cs-icon">🔬</div>
-        <div class="cs-title">KERACUNAN</div>
-        <div class="cs-sub">
-          SEDANG MELAKUKAN PENGUMPULAN DATA<br>
-          DATA KASUS KERACUNAN TERKAIT PROGRAM MBG SEDANG DIKOMPILASI<br>
-          AKAN TERSEDIA SEGERA
+      <div class="p-label">KASUS KERACUNAN MASSAL — PROGRAM <em style="font-style:italic;color:var(--gold)">MBG</em></div>
+
+      <div class="big-num" style="color:var(--red);">11.390+</div>
+      <div class="rline">
+        total korban tercatat
+        <span class="sep">|</span>
+        sumber: <span class="hl">Wikipedia ID</span>
+        <span class="sep">|</span>
+        per: <span class="hl">Feb 2026</span>
+      </div>
+
+      <div class="fact-grid" style="margin-top:18px;">
+        <div class="fact-card"><span class="fact-val">9+</span><span class="fact-lbl">Provinsi terdampak</span></div>
+        <div class="fact-card"><span class="fact-val">1.333</span><span class="fact-lbl">Korban kasus terbesar (Jabar)</span></div>
+        <div class="fact-card"><span class="fact-val">~1 thn</span><span class="fact-lbl">Sejak program berjalan</span></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="sec-label" style="text-align:left;">Kasus Tercatat (Sampel)</div>
+      <div class="case-list">
+        <div class="case-row">
+          <div class="case-date">22 Sept<br>2025</div>
+          <div class="case-loc">SDN Cipari & sekolah lain, Bandung Barat<span class="case-prov">Jawa Barat</span></div>
+          <div class="case-vic">1.333<small>siswa</small></div>
         </div>
+        <div class="case-row">
+          <div class="case-date">31 Okt<br>2025</div>
+          <div class="case-loc">SMK Kandeman, Batang<span class="case-prov">Jawa Tengah</span></div>
+          <div class="case-vic">800<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">1 Okt<br>2025</div>
+          <div class="case-loc">SMAN 1 Kedungadem, Bojonegoro<span class="case-prov">Jawa Timur</span></div>
+          <div class="case-vic">544<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">5 Feb<br>2026</div>
+          <div class="case-loc">SMP Negeri 1 Marau & lainnya<span class="case-prov">Kalimantan Barat</span></div>
+          <div class="case-vic">417<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">13 Agt<br>2025</div>
+          <div class="case-loc">SMP Muhammadiyah 1 Mlati & lainnya<span class="case-prov">Yogyakarta</span></div>
+          <div class="case-vic">379<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">5 Mei<br>2025</div>
+          <div class="case-loc">14 sekolah di Kabupaten PALI<span class="case-prov">Sumatera Selatan</span></div>
+          <div class="case-vic">174<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">1 Okt<br>2025</div>
+          <div class="case-loc">Berbagai TK–SMP, Kabupaten Agam<span class="case-prov">Sumatera Barat</span></div>
+          <div class="case-vic">122<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">15 Okt<br>2025</div>
+          <div class="case-loc">SD Tanding & SMPN 1 Laguboti<span class="case-prov">Sumatera Utara</span></div>
+          <div class="case-vic">121<small>siswa</small></div>
+        </div>
+        <div class="case-row">
+          <div class="case-date">29 Sept<br>2025</div>
+          <div class="case-loc">SDN 6 Matangkuli<span class="case-prov">Aceh Utara</span></div>
+          <div class="case-vic">3<small>siswa</small></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="def-box">
+        <div class="def-title">Penyebab Teridentifikasi</div>
+        <div class="def-grid">
+          <div>
+            <span class="def-term">MAKANAN BASI</span>
+            <span class="def-desc">Makanan sudah rusak / busuk sebelum sampai ke siswa.</span>
+          </div>
+          <div>
+            <span class="def-term">KONTAMINASI BAKTERI</span>
+            <span class="def-desc">Salmonella & bakteri patogen lain ditemukan pada sampel makanan.</span>
+          </div>
+          <div>
+            <span class="def-term">HIGIENE DAPUR BURUK</span>
+            <span class="def-desc">Standar sanitasi di SPPG / dapur penyedia tidak terpenuhi.</span>
+          </div>
+          <div>
+            <span class="def-term">DISTRIBUSI TERTUNDA</span>
+            <span class="def-desc">Jeda waktu masak ke konsumsi terlalu panjang, makanan rusak di perjalanan.</span>
+          </div>
+          <div>
+            <span class="def-term">DUGAAN SABOTASE</span>
+            <span class="def-desc">Klaim resmi pemerintah pada beberapa kasus — belum terbukti.</span>
+          </div>
+          <div>
+            <span class="def-term">KUALITAS BAHAN</span>
+            <span class="def-desc">Bahan baku bermutu rendah akibat pemotongan biaya per porsi.</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="src-note">
+        Sumber: <a href="https://id.wikipedia.org/wiki/Daftar_kasus_keracunan_massal_program_Makan_Bergizi_Gratis"
+          target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;">id.wikipedia.org — Daftar kasus keracunan massal program MBG</a>
       </div>
     </div>
   </div>
