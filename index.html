@@ -62,7 +62,6 @@
     pointer-events:none;}
   .p-red   {border-top:3px solid var(--red);}
   .p-gold  {border-top:3px solid var(--gold);}
-  .p-orange{border-top:3px solid #e07a35;}
 
   .p-label{font-family:var(--mono);font-size:10px;letter-spacing:3px;
     color:var(--dim);margin-bottom:12px;text-transform:uppercase;}
@@ -97,14 +96,6 @@
   .tb-sep{font-family:var(--display);font-size:36px;color:var(--red-dim);align-self:center;
     animation:blink 1s step-end infinite;padding-bottom:14px;}
   @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-  /* ── SPEED GRID ── */
-  .speed-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  .speed-card{background:var(--card2);border:1px solid var(--border);padding:18px 12px;text-align:center;}
-  .sp-period{font-family:var(--mono);font-size:8px;letter-spacing:3px;color:var(--muted);
-    display:block;margin-bottom:10px;text-transform:uppercase;}
-  .sp-val{font-family:var(--display);font-size:clamp(18px,2.5vw,26px);color:var(--red);
-    display:block;text-shadow:0 0 12px var(--red-g);line-height:1;}
 
   /* ── FACT GRID ── */
   .fact-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
@@ -221,9 +212,20 @@
   .vp-time{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1px;}
   .vp-time .vp-t{color:var(--text);}
 
+  /* ── VISIT REOPENER ── */
+  .visit-reopen{position:fixed;bottom:16px;right:16px;z-index:1000;
+    background:var(--card);border:1px solid var(--border2);border-left:3px solid var(--red);
+    color:var(--red);font-family:var(--mono);font-size:10px;letter-spacing:2px;
+    padding:8px 12px;cursor:pointer;
+    box-shadow:0 4px 14px rgba(0,0,0,.5);
+    display:flex;align-items:center;gap:7px;
+    transform:translateY(140%);transition:transform .35s ease;}
+  .visit-reopen.show{transform:translateY(0);}
+  .visit-reopen:hover{background:#1a1a1a;}
+  .visit-reopen .live-dot{width:6px;height:6px;}
+
   /* ── RESPONSIVE ── */
   @media(max-width:600px){
-    .speed-grid{grid-template-columns:repeat(2,1fr);}
     .fact-grid{grid-template-columns:repeat(2,1fr);}
     .waste-2col{grid-template-columns:1fr;}
     .def-grid{grid-template-columns:1fr;}
@@ -231,6 +233,7 @@
     .tb-val{font-size:26px;}
     .big-num{font-size:22px;}
     .visit-pop{bottom:10px;right:10px;left:10px;max-width:none;min-width:0;}
+    .visit-reopen{bottom:10px;right:10px;}
   }
 </style>
 </head>
@@ -277,29 +280,6 @@
       <div class="tb"><span class="tb-val" id="mins">00</span><span class="tb-lbl">MIN</span></div>
       <div class="tb-sep">:</div>
       <div class="tb"><span class="tb-val" id="secs">00</span><span class="tb-lbl">DTK</span></div>
-    </div>
-  </div>
-
-  <!-- ══ PANEL 2: KECEPATAN ══ -->
-  <div class="panel p-orange">
-    <div class="sec-label">Kecepatan bakar uang rakyat</div>
-    <div class="speed-grid">
-      <div class="speed-card">
-        <span class="sp-period">Per Detik</span>
-        <span class="sp-val">Rp 10,6 jt</span>
-      </div>
-      <div class="speed-card">
-        <span class="sp-period">Per Menit</span>
-        <span class="sp-val">Rp 637,4 jt</span>
-      </div>
-      <div class="speed-card">
-        <span class="sp-period">Per Jam</span>
-        <span class="sp-val">Rp 38,2 M</span>
-      </div>
-      <div class="speed-card">
-        <span class="sp-period">Per Hari</span>
-        <span class="sp-val">Rp 917,8 M</span>
-      </div>
     </div>
   </div>
 
@@ -434,6 +414,9 @@
   <div class="vp-amt" id="visitAmt">Rp 0</div>
   <div class="vp-time">durasi: <span class="vp-t" id="visitTime">00:00</span></div>
 </div>
+<button class="visit-reopen" id="visitReopen" aria-label="Buka tracker kunjungan">
+  <span class="live-dot"></span>TRACKER
+</button>
 
 <footer>
   SUMBER: CNBC INDONESIA · REALISASI Rp 52,9 T PER 15 DES 2025 · PAGU APBN 2025: Rp 71 T<br>
@@ -554,9 +537,17 @@
   }
 
   /* ── VISIT POPUP ── */
-  const visitPop = E('visitPop');
+  const visitPop    = E('visitPop');
+  const visitReopen = E('visitReopen');
   setTimeout(() => visitPop.classList.add('show'), 800);
-  E('visitClose').addEventListener('click', () => visitPop.classList.remove('show'));
+  E('visitClose').addEventListener('click', () => {
+    visitPop.classList.remove('show');
+    setTimeout(() => visitReopen.classList.add('show'), 200);
+  });
+  visitReopen.addEventListener('click', () => {
+    visitReopen.classList.remove('show');
+    setTimeout(() => visitPop.classList.add('show'), 200);
+  });
 
   /* ── TABS ── */
   function switchTab(id, btn) {
