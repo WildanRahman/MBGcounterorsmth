@@ -80,6 +80,8 @@
   .rline{font-family:var(--mono);font-size:13px;color:var(--dim);line-height:2;margin-bottom:10px;}
   .rline .hl{color:var(--text);}
   .rline .sep{color:var(--muted);margin:0 6px;}
+  .rline.upd-note{font-size:11px;line-height:1.6;color:var(--muted);margin-top:-6px;}
+  .rline.upd-note .up{color:var(--red);}
 
   /* ── INFO ROW ── */
   .irow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:4px;}
@@ -455,6 +457,7 @@
       <div class="rline">
         data diperbarui: <span class="hl" id="kUpdated">—</span>
       </div>
+      <div class="rline upd-note" id="kNote"></div>
 
       <div class="fact-grid" style="margin-top:18px;">
         <div class="fact-card"><span class="fact-val" id="kIncidents">0</span><span class="fact-lbl">Insiden keracunan</span></div>
@@ -508,8 +511,8 @@
       </div>
 
       <div class="src-note">
-        Sumber: <a href="https://id.wikipedia.org/wiki/Daftar_kasus_keracunan_massal_program_Makan_Bergizi_Gratis"
-          target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;">id.wikipedia.org — Daftar kasus keracunan massal program MBG</a>
+        Sumber: <a href="https://id.wikipedia.org/wiki/Daftar_kasus_keracunan_massal_makan_siang_gratis#Makan_Bergizi_Gratis"
+          target="_blank" rel="noopener" style="color:var(--gold);text-decoration:none;">id.wikipedia.org — Daftar kasus keracunan massal makan siang gratis (bagian Makan Bergizi Gratis)</a>
       </div>
     </div>
   </div>
@@ -685,14 +688,41 @@
   ══════════════════════════════════ */
   const RAW_CASES = `29 September 2025|Aceh|Kabupaten Aceh Utara|SDN 6 Matangkuli|3 Siswa
 24 Januari 2026|Aceh|Kabupaten Aceh Timur|TBA|19 Siswa
-11 Februari 2026|Aceh|Kabupaten Aceh Singkil|TK Bunga Al-Qur'an|33 Santri
+11 Februari 2026|Aceh|Kabupaten Aceh Singkil|TK Bunga Al-Qur’an|33 Santri
 11 Februari 2026|Aceh|Kabupaten Aceh Singkil|Pesantren Modern Darul Mustafa|-
+26 Februari 2026|Aceh|Kabupaten Bireuen|warga Simpang Mamplam dan Pandrah|140 Warga
+17 September 2026|Aceh|Kabupaten Bireuen|SMAN 1 Kuala|17 Siswa
+26 Februari 2026|Aceh|Kabupaten Aceh Selatan|PAUD (Spesifik tidak disebutkan)|18 Siswa
+26 Februari 2026|Aceh|Kabupaten Aceh Selatan|SMA (Spesifik tidak disebutkan)|-
+2 September 2026|Aceh|Kabupaten Bener Meriah|SDN Bukit Mulie|16 Orang
 15 Oktober 2025|Sumatera Utara|Kabupaten Toba|SD Tanding Laguboti|121 Siswa
 15 Oktober 2025|Sumatera Utara|Kabupaten Toba|SMPN 1 Laguboti|-
 31 Oktober 2025|Sumatera Utara|Kabupaten Nias Utara|SD 071027 Onozitoli Sawo|26 Siswa
 9 Februari 2026|Sumatera Utara|Kabupaten Dairi|SMK Swasta HKBP Sidikalang|271 Siswa
 9 Februari 2026|Sumatera Utara|Kabupaten Dairi|SMK Swasta Arina Sidikalang|-
-1 Oktober 2025|Sumatera Barat|Kabupaten Agam|TK/SD/MTS/SMP/TBA (tidak spesifik)|122 Siswa
+24 Februari 2026|Sumatera Utara|Kabupaten Nias Selatan|SDN 071123|35 Siswa
+1 April 2026|Sumatera Utara|Kabupaten Humbang Hasundutan|SMPN 016 Nagasaribu|18 Siswa
+1 April 2026|Sumatera Utara|Kabupaten Humbang Hasundutan|SMA Negeri 3 Lintongnihuta|-
+28 April 2026|Sumatera Utara|Kabupaten Deli Serdang|SD swasta terpadu As Syifa|11 Siswa
+18 September 2026|Sumatera Utara|Kabupaten Deli Serdang|SDN 101976 Desa Bandar Kuala|38 Siswa
+18 September 2026|Sumatera Utara|Kabupaten Deli Serdang|SDN 106197 Desa Paku|-
+18 September 2026|Sumatera Utara|Kabupaten Deli Serdang|SDN 101961 Desa Timbang Deli|-
+18 September 2026|Sumatera Utara|Kabupaten Deli Serdang|SDN 107827 Desa Titi Besi|-
+13 Agustus 2026|Sumatera Utara|Kabupaten Karo|SMP Negeri 3 Kabanjahe|361 Siswa
+13 Agustus 2026|Sumatera Utara|Kabupaten Karo|SMP Swasta Bersama|-
+13 Agustus 2026|Sumatera Utara|Kabupaten Karo|SMAN 1 Berastagi|-
+13 Agustus 2026|Sumatera Utara|Kabupaten Karo|SMK Swasta Bersama|-
+13 Agustus 2026|Sumatera Utara|Kabupaten Karo|SMA Swasta Bersama|-
+14 September 2026|Sumatera Utara|Kabupaten Karo|SMKN 1 Merdeka|35 Siswa
+11 September 2026|Sumatera Utara|Kabupaten Labuhanbatu Utara|SMP Swasta Ahmad Dahlan|5 Siswa
+14 September 2026|Sumatera Utara|Kabupaten Asahan|MTsN 2 Kisaran|30 Siswa
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|TK (Spesifik tidak disebutkan)|122 Siswa
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|SD (Spesifik tidak disebutkan)|-
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|MTS (Tidak diumumkan)|-
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|SMP (Tidak diumumkan)|-
+1 Oktober 2025|Sumatera Barat|Kabupaten Agam|TBA|-
+2 September 2026|Sumatera Barat|Kabupaten Agam|SD (Spesifik tidak disebutkan)|344 Orang
+2 September 2026|Sumatera Barat|Kabupaten Agam|SMP Negeri 1 Palupuh|-
 7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 9 Kelurahan Ekor Lubuk|29 Siswa
 7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 10 Tabek Gadang|-
 7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SDN 7 Kelurahan Ganting|-
@@ -700,7 +730,9 @@
 7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SMPN 3 Kelurahan Ekor Lubuk|-
 7 Oktober 2025|Sumatera Barat|Kota Padang Panjang|SMKN 2 Kelurahan Ganting|-
 4 Februari 2026|Sumatera Barat|Kabupaten Dharmasraya|SMAN 1 Sungai Rumbai|221 Orang
-4 Februari 2026|Sumatera Barat|Kabupaten Dharmasraya|Pondok Pesantren|-
+4 Februari 2026|Sumatera Barat|Kabupaten Dharmasraya|Pondok Pesantrean|-
+14 September 2026|Sumatera Barat|Kota Pariaman|MTsN 1 Kota Pariaman|127 Siswa
+14 September 2026|Sumatera Barat|Kota Pariaman|SMP 1 Kota Pariaman|-
 18 Februari 2025|Sumatera Selatan|Kabupaten Empat Lawang|SD Negeri 7 Tebing Tinggi|8 Siswa
 5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 28 Talang Ubi|174 Siswa
 5 Mei 2025|Sumatera Selatan|Kabupaten Penukal Abab Lematang Ilir|SDN 20 Talang Ubi|-
@@ -720,9 +752,10 @@
 2 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ilir|SD Negeri 5 Pedamaran|-
 2 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ilir|SMP Negeri 1 Pedamaran|-
 3 September 2025|Sumatera Selatan|Kabupaten Musi Banyuasin|SDN 3 Mangun Jaya|9 Siswa
+30 September 2026|Sumatera Selatan|Kabupaten Musi Banyuasin|SDN 1 Mangun Jaya|25 Siswa
 23 September 2025|Sumatera Selatan|Kabupaten Ogan Komering Ulu|SMPN 9 Ogan Komering Ulu|12 Siswa
 25 September 2025|Sumatera Selatan|Kota Palembang|SDN 178 Palembang|15 Siswa
-5 November 2025|Sumatera Selatan|Kota Palembang|Pondok Pesantren Ma'had Zaadul Ma'ad|20 Santri
+5 November 2025|Sumatera Selatan|Kota Palembang|Pondok Pesantren Ma’had Zaadul Ma’ad|20 Santri
 26 November 2025|Sumatera Selatan|Kota Palembang|SMAN 2 Palembang|23 Siswa
 30 Januari 2026|Sumatera Selatan|Kota Palembang|SMPN 31 Palembang|4 Siswa
 9 Februari 2026|Sumatera Selatan|Kabupaten Ogan Ilir|Pondok Pesantren Al Ittifaqiah Indralaya|15 Santri
@@ -731,11 +764,20 @@
 22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SD Muhammadiyah|-
 22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|SMA Negeri 1 Kota|-
 22 Agustus 2025|Riau|Kabupaten Indragiri Hilir|TK Faturahman|-
-28 Agustus 2025|Riau|Kabupaten Kampar|SDN 006 Langgini|18 Siswa
+28 Agustus 2025|Riau|Kabupaten Kampar|SDN 006 Langgini|18 siswa
+18 Agustus 2026|Riau|Kabupaten Kampar|SDN 008 Rimba Beringin|141 Orang
+18 Agustus 2026|Riau|Kabupaten Kampar|SMKN 1 Tapung Hulu|-
+6 Oktober 2026|Riau|Kabupaten Kampar|SDN 44 Karya Indah|12 Siswa
 23 Januari 2026|Riau|Kabupaten Siak|SMKN 1 Kandis|21 Siswa
+13 Agustus 2026|Riau|Kota Dumai|SDN 013 Buluh Kasap|42 Siswa
+13 Agustus 2026|Riau|Kota Dumai|SDN 015 Buluh Kasap|-
 25 September 2025|Kepulauan Riau|Kabupaten Karimun|SMPN 2 Karimun|14 Siswa
 29 September 2025|Kepulauan Riau|Kota Batam|SDN 016 Seilekop|18 Siswa
 11 November 2025|Kepulauan Riau|Kota Batam|MAN 2 Kota Batam|235 Siswa
+29 April 2026|Kepulauan Riau|Kota Batam|SMK Negeri 3 Batam|Ratusan Siswa
+15 April 2026|Kepulauan Riau|Kabupaten Kepulauan Anambas|TK (Spesifik tidak disebutkan)|158 Siswa
+15 April 2026|Kepulauan Riau|Kabupaten Kepulauan Anambas|SD (Spesifik tidak disebutkan)|-
+15 April 2026|Kepulauan Riau|Kabupaten Kepulauan Anambas|SMP ((Spesifik tidak disebutkan)|-
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|PAUD IT Al-Azhar|539 Siswa
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|PAUD Az-Zahra|-
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|TK Al Akhlak|-
@@ -748,37 +790,60 @@
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|SD IT Suka Bumi|-
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|SMP 05 Lebong|-
 28 Agustus 2025|Bengkulu|Kabupaten Lebong|SMP 16 Lebong|-
-30 Januari 2026|Jambi|Kabupaten Muaro Jambi|TK/SD/SMP/SMA (tidak spesifik)|150 Siswa
+26 Februari 2026|Bengkulu|Kabupaten Bengkulu Utara|MIN 2 Ketahun (1 siswa meninggal)|1 Siswa
+23 April 2026|Bengkulu|Kabupaten Bengkulu Tengah|SMP Negeri 3 Bengkulu Tengah|8 Siswa
+4 Juni 2026|Bengkulu|Kabupaten Kepahiang|SDN 18 Taba Tebelet|16 Orang
+4 September 2026|Bengkulu|Kota Bengkulu|SDN 59 Kota Bengkulu|7 Siswa
+30 Januari 2026|Jambi|Kabupaten Muaro Jambi|TK (Spesifik tidak disebutkan)|150 Siswa
+30 Januari 2026|Jambi|Kabupaten Muaro Jambi|SD (Spesifik tidak disebutkan)|-
+30 Januari 2026|Jambi|Kabupaten Muaro Jambi|SMP (Spesifik tidak disebutkan)|-
+30 Januari 2026|Jambi|Kabupaten Muaro Jambi|SMA (Spesifik tidak disebutkan)|-
+9 April 2026|Jambi|Kota Jambi|SMPN 7 Kota Jambi|3 Guru
+20 Mei 2026|Jambi|Kota Jambi|SMKN 1 Kota Jambi|8 Siswa
 Agustus 2025|Bangka Belitung|Kabupaten Belitung Timur|TBA|TBA
+4 Mei 2026|Bangka Belitung|Kabupaten Belitung|SDN 23 Tanjungpandan|30 Siswa
+4 Mei 2026|Bangka Belitung|Kabupaten Belitung|SD Negeri 7 Tanjungpandan|-
+18 September 2026|Bangka Belitung|Kabupaten Bangka Tengah|Madrasah Ibtidaiyah (MI) Al-Arifin|6 Siswa
 15 Juli 2025|Lampung|Kabupaten Lampung Utara|SD Soekarno Hatta|Puluhan Siswa
 15 Juli 2025|Lampung|Kabupaten Lampung Utara|SD IT Insan Rhobani|-
 29 Agustus 2025|Lampung|Kabupaten Lampung Utara|SDN 1 Negara Agung|16 Siswa
 29 September 2025|Lampung|Kabupaten Lampung Utara|SMAN 4 Kota Bumi|52 Siswa
 12 Januari 2026|Lampung|Kabupaten Lampung Utara|SDN 3 Sindang Sari|11 Siswa
 6 Agustus 2025|Lampung|Kabupaten Tanggamus|SDN 1 Way Jaha|18 Siswa
+23 Juli 2026|Lampung|Kabupaten Tanggamus|SMPN 1 Talangpadang|23 Siswa
 26 Agustus 2025|Lampung|Kabupaten Lampung Timur|Pondok Pesantren Al Islah|40 Santri
 26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 1 Lehan|41 Siswa
 26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 2 Lehan|-
 26 September 2025|Lampung|Kabupaten Lampung Timur|SDN 1 Sukadana|-
 26 September 2025|Lampung|Kabupaten Lampung Timur|SD Catur Swako|-
 26 September 2025|Lampung|Kabupaten Lampung Timur|SMPN PGRI 1 Bumi Agung|-
-28 Januari 2026|Lampung|Kabupaten Lampung Timur|Pondok Pesantren (tidak spesifik)|Ratusan Siswa
-28 Januari 2026|Lampung|Kabupaten Lampung Timur|SD (tidak spesifik)|-
-28 Januari 2026|Lampung|Kabupaten Lampung Timur|SMP (tidak spesifik)|-
-29 Agustus 2025|Lampung|Kota Bandar Lampung|SDN 2 Sukabumi|247 Siswa
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|Pondok Pesantren (Spesifik tidak disebutkan)|Ratusan siswa
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|SD (Spesifik tidak disebutkan)|-
+28 Januari 2026|Lampung|Kabupaten Lampung Timur|SMP (Spesifik tidak disebutkan)|-
+27 Februari 2026|Lampung|Kabupaten Lampung Timur|TBA|Belasan Siswa
+29 Agustus 2025|Lampung|Kota Bandar Lampung|SDN 2 Sukabumi|247 siswa
 29 Agustus 2025|Lampung|Kota Bandar Lampung|SDN 2 Campang Raya|-
 29 Agustus 2025|Lampung|Kota Bandar Lampung|SMPN 31 Campang Raya|-
 29 Agustus 2025|Lampung|Kota Bandar Lampung|SMKN 5 Sukabumi|-
 11 Februari 2026|Lampung|Kota Bandar Lampung|SDN 4 Sumberjo|87 Orang
 11 Februari 2026|Lampung|Kota Bandar Lampung|SD Al Munawaroh|76 Orang
 11 Februari 2026|Lampung|Kota Bandar Lampung|SMPN 14 Bandar Lampung|43 Orang
+22 April 2026|Lampung|Kota Bandar Lampung|SMAN 6 Bandar Lampung|172 Orang
 Tidak Disebutkan|Lampung|Kabupaten Lampung Selatan|TBA|27 Siswa
 3 Desember 2025|Lampung|Kabupaten Lampung Selatan|SMPN 2 Kalianda|6 Siswa
+16 September 2026|Lampung|Kabupaten Lampung Selatan|MI Syamsul Maarif|11 Siswa
 4 September 2025|Lampung|Kota Metro|TBA|12 Siswa
 29 September 2025|Lampung|Kabupaten Tulang Bawang Barat|SDN 06 Penumangan Lama|8 Siswa
 6 Oktober 2025|Lampung|Kabupaten Lampung Tengah|SMA Negeri 1 Punggur|14 Siswa
-3 Desember 2025|Lampung|Kabupaten Way Kanan|SMP (tidak spesifik)|11 Siswa + 1 Guru
+22 September 2026|Lampung|Kabupaten Lampung Tengah|SDN 03 Poncowarno (1 orang meninggal)|1 Orang
+24 September 2026|Lampung|Kabupaten Lampung Tengah|SDN 1 Gunungagung|33 Siswa
+24 September 2026|Lampung|Kabupaten Lampung Tengah|SDN 2 Gunungagung|-
+24 September 2026|Lampung|Kabupaten Lampung Tengah|SD Negeri 1 Tamansari|26 Siswa
+3 Desember 2025|Lampung|Kabupaten Way Kanan|SMP (Spesifik tidak disebutkan)|11 Siswa + 1 Guru
+24 Februari 2026|Lampung|Kabupaten Tulang Bawang|SDN 1 Kibang|35 Siswa
+24 Juli 2026|Lampung|Kabupaten Pesawaran|SDN 22 Ogan 2 Trimulyo|33 Orang
 25 Februari 2025|Kalimantan Barat|Kabupaten Kubu Raya|SDN 08 Sungai Raya|5 Siswa
+24 April 2026|Kalimantan Barat|Kabupaten Kubu Raya|SDN 23 Sungai Ambawang|12 Siswa
 23 September 2025|Kalimantan Barat|Kabupaten Ketapang|SDN 12 Benua Kayong|25 Siswa
 5 Februari 2026|Kalimantan Barat|Kabupaten Ketapang|SMP Negeri 1 Marau|417 Siswa
 5 Februari 2026|Kalimantan Barat|Kabupaten Ketapang|SMA Negeri 1 Marau|-
@@ -791,7 +856,11 @@ Tidak Disebutkan|Lampung|Kabupaten Lampung Selatan|TBA|27 Siswa
 19 November 2025|Kalimantan Barat|Kabupaten Landak|SMK Maniamas Ngabang|-
 19 November 2025|Kalimantan Barat|Kabupaten Landak|SMA Pelita|-
 5 Februari 2026|Kalimantan Barat|Kota Singkawang|MAN Model Singkawang|56 Siswa
-29 September 2025|Kalimantan Tengah|Kota Palangkaraya|SDN 3 Bukit Tunggal|27 Siswa
+22 Mei 2026|Kalimantan Barat|Kabupaten Sambas|SD (Spesiftik tidak disebutkan)|15 Siswa
+29 September 2025|Kalimantan Tengah|Kota Palangka Raya|SDN 3 Bukit Tunggal|27 Siswa
+5 Februari 2026|Kalimantan Tengah|Kota Palangka Raya|Posyandu Harum Manis|16 Warga
+28 Juli 2026|Kalimantan Tengah|Kabupaten Seruyan|SMPN 1 Kuala Pembuang|156 Orang
+28 Juli 2026|Kalimantan Tengah|Kabupaten Seruyan|SMAN 1 Kuala Pembuang|-
 13 Januari 2025|Kalimantan Utara|Kabupaten Nunukan|SDN 003 Nunukan Selatan|29 Siswa
 13 Januari 2025|Kalimantan Utara|Kabupaten Nunukan|SMAN 2 Nunukan Selatan|> 30 Siswa
 30 September 2025|Kalimantan Utara|Kabupaten Nunukan|PAUD Ar Rahman, Sei Limau|145 Siswa
@@ -802,16 +871,29 @@ Tidak Disebutkan|Lampung|Kabupaten Lampung Selatan|TBA|27 Siswa
 25 September 2025|Kalimantan Timur|Kota Balikpapan|SMKN 3 Balikpapan|5 Siswa
 12 Februari 2026|Kalimantan Timur|Kabupaten Penajam Paser Utara|SDN 008 Waru|26 Siswa
 12 Februari 2026|Kalimantan Timur|Kabupaten Penajam Paser Utara|SMAN 2 Penajam Paser Utara|-
+3 Agustus 2026|Kalimantan Timur|Kabupaten Kutai Kartanegara|SDN 025 Sebulu|46 Orang
+3 Agustus 2026|Kalimantan Timur|Kabupaten Kutai Kartanegara|SDN 003 Sebulu|-
+3 Agustus 2026|Kalimantan Timur|Kabupaten Kutai Kartanegara|MI (Spesifik tidak disebutkan)|-
+3 Agustus 2026|Kalimantan Timur|Kabupaten Kutai Kartanegara|MTS (Spesifik tidak disebutkan)|-
+5 Agustus 2026|Kalimantan Timur|Kota Bontang|TBA|27 Siswa
 9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|Sekolah Islam Terpadu Assalam|134 Siswa
 9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SD Muhammadiyah|-
 9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SDN 1 Tungkaran|-
 9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SDN 1 Pasayangan|-
 9 Oktober 2025|Kalimantan Selatan|Kabupaten Banjar|SMA IT Assalam|-
 21 Oktober 2025|Kalimantan Selatan|Kota Banjarmasin|SMPN 33 Banjarmasin|40 Siswa
+23 April 2026|Kalimantan Selatan|Kabupaten Hulu Sungai Utara|SMKN 1 Amuntai|61 Siswa
 19 Januari 2025|Banten|Kabupaten Pandeglang|SDN 2 Alaswangi|28 Siswa
 2 September 2025|Banten|Kabupaten Serang|SMPN 1 Kramatwatu|27 Siswa
-September 2025|Banten|Kota Tangerang Selatan|SD (tidak spesifik)|TBA
+September 2025|Banten|Kota Tangerang Selatan|SD (Spesifik tidak disebutkan)|TBA
+8 April 2026|Banten|Kota Tangerang|TK (Spesifik tidak disebutkan)|±100 Siswa
+8 April 2026|Banten|Kota Tangerang|SMK Farmasi|-
+8 April 2026|Banten|Kota Tangerang|Pesantren WH Tahfidz|-
 16 April 2026|Banten|Kota Cilegon|MTs Al-Inayah|49 Siswa
+20 April 2026|Banten|Kota Cilegon|SDN Cikerai 2|19 Siswa
+22 April 2026|Banten|Kota Cilegon|SMP PGRI Citangkil|11 Siswa
+29 April 2026|Banten|Kabupaten Tangerang|TBA|33 Siswa
+24 Mei 2026|Banten|Kabupaten Serang|SMAN 1 Padarincang|32 Siswa
 29 Agustus 2025|DKI Jakarta|Jakarta Selatan|TBA|3 Siswa
 8 September 2025|DKI Jakarta|Jakarta Utara|TBA|14 Siswa
 8 September 2025|DKI Jakarta|Jakarta Utara|SMPN 277 Jakarta|Puluhan Siswa
@@ -819,30 +901,48 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 23 September 2025|DKI Jakarta|Jakarta Utara|SMAN 15 Jakarta|7 Siswa
 25 September 2025|DKI Jakarta|Jakarta Timur|SDN 07 Pulogebang|6 Siswa
 30 September 2025|DKI Jakarta|Jakarta Timur|SDN 01 Gedong|22 Siswa
+3 April 2026|DKI Jakarta|Jakarta Timur|SDN Pondok Kelapa 1|135 Siswa
+3 April 2026|DKI Jakarta|Jakarta Timur|SDN Pondok Kelapa 7|-
+3 April 2026|DKI Jakarta|Jakarta Timur|SDN Pondok Kelapa 9|-
+3 April 2026|DKI Jakarta|Jakarta Timur|SMAN 91 Jakarta|-
+8 Mei 2026|DKI Jakarta|Jakarta Timur|SDN Cakung Timur 01|252 Siswa
+8 Mei 2026|DKI Jakarta|Jakarta Timur|SDN Ujung Menteng 02|-
+8 Mei 2026|DKI Jakarta|Jakarta Timur|SDN Ujung Menteng 03|-
 29 Oktober 2025|DKI Jakarta|Jakarta Barat|SDN Meruya Selatan 01|20 Siswa
+22 Mei 2026|DKI Jakarta|Jakarta Barat|SMPN 82 Jakarta|116 Siswa
+1 April 2026|DKI Jakarta|Jakarta Pusat|SMPN 71 Jakarta Pusat|48 Siswa
 14 Januari 2025|Jawa Barat|Kabupaten Indramayu|TBA|6 Siswa
 22 Agustus 2025|Jawa Barat|Kabupaten Indramayu|TBA|2 Siswa
+5 Oktober 2026|Jawa Barat|Kabupaten Indramayu|SMAN 1 Tukadana|143 Siswa
 21 April 2025|Jawa Barat|Kabupaten Cianjur|MAN 1 Cianjur|51 Siswa
 21 April 2025|Jawa Barat|Kabupaten Cianjur|SMP PGRI Cianjur|52 Siswa
 20 Agustus 2025|Jawa Barat|Kabupaten Cianjur|Pondok Pesantren Darul Quran|12 Santri
 3 September 2025|Jawa Barat|Kabupaten Cianjur|MTs Islamiyah Sayang|9 Siswa
 11 September 2025|Jawa Barat|Kabupaten Cianjur|SDN Salakawung|36 Siswa
+11 September 2025|Jawa Barat|Kabupaten Cianjur|SMP Budi Luhur|-
 25 September 2025|Jawa Barat|Kabupaten Cianjur|SDN Taruna Bakti|30 Siswa
 9 Oktober 2025|Jawa Barat|Kabupaten Cianjur|Yayasan Raudhatul Muttaqin|16 Siswa
 27 Januari 2026|Jawa Barat|Kabupaten Cianjur|SDN Wargasari|300 Siswa
-29 April 2025|Jawa Barat|Kota Bandung|SMP Negeri 35 Bandung|342 Siswa + 2 Guru
+27 Januari 2026|Jawa Barat|Kabupaten Cianjur|TBA|-
+17 April 2026|Jawa Barat|Kabupaten Cianjur|Desa Sukasirna (1 orang meninggal)|134 Warga
+17 April 2026|Jawa Barat|Kabupaten Cianjur|Desa Purabaya|-
+13 Mei 2026|Jawa Barat|Kabupaten Cianjur|SD Negeri Ciadeg|19 Siswa
+6 Agustus 2026|Jawa Barat|Kabupaten Cianjur|MTS Al - Hidayah|250 Siswa
+6 Agustus 2026|Jawa Barat|Kabupaten Cianjur|MA Al - Hidayah|-
+29 April 2025|Jawa Barat|Kota Bandung|SMP Negeri 35 Bandung|342 siswa dan 2 guru
 1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|Beberapa Sekolah TK|400 Siswa
 1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN 1 Rajapolah|-
 1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN 2 Rajapolah|-
 1 Mei 2025|Jawa Barat|Kabupaten Tasikmalaya|SMPN 1 Rajapolah|-
 18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|SD Cikalong 1|52 Siswa
 18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|PAUD di wilayah Cikalong|-
-18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|Beberapa sekolah lain di Kecamatan Cikalong|-
+18 September 2025|Jawa Barat|Kabupaten Tasikmalaya|“beberapa sekolah lain” di Kecamatan Cikalong|-
 2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SMK Negeri Cipatujah|115 Siswa
 2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SMP Negeri 4 Cipatujah|-
 2 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|Pondok Pesantren Nursyamsiah|-
 13 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|Posyandu Daerah Manonjaya|11 Balita
 17 Oktober 2025|Jawa Barat|Kabupaten Tasikmalaya|SDN Margamulya|13 Siswa
+8 April 2026|Jawa Barat|Kabupaten Tasikmalaya|SMAN 1 Cisayong|119 Siswa
 7-9 Mei 2025|Jawa Barat|Kota Bogor|TK Bosowa Bina Insani|28 Siswa
 7-9 Mei 2025|Jawa Barat|Kota Bogor|SD Bosowa Bina Insani|13 Siswa
 7-9 Mei 2025|Jawa Barat|Kota Bogor|SMP Bosowa Bina Insani|96 Siswa
@@ -856,13 +956,15 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 14 November 2025|Jawa Barat|Kota Bogor|SDN 3 Batu Tulis|-
 14 November 2025|Jawa Barat|Kota Bogor|SD Lawang Gintung|-
 14 November 2025|Jawa Barat|Kota Bogor|SMK PUI Kota Bogor|-
-31 Juli 2025|Jawa Barat|Kabupaten Kuningan|SMPN 1 Cilimus|30 Siswa
+31 Juli 2025|Jawa Barat|Kabupaten Kuningan|SMPN 1 Cilimus|± 30 Siswa
 3 Oktober 2025|Jawa Barat|Kabupaten Kuningan|SMP 1 Luragung|97 Siswa
 3 Oktober 2025|Jawa Barat|Kabupaten Kuningan|SMAN 1 Luragung|103 Siswa
 28 November 2025|Jawa Barat|Kabupaten Kuningan|TBA|74 Siswa
-6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|SDN Puncak Batu|32 Siswa
+14 September 2026|Jawa Barat|Kabupaten Kuningan|SMP (Spesifik tidak disebutkan)|30 Pelajar
+6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|SDN Puncak Batu|± 32 Siswa
 6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|MI Cikadu|-
 6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|PAUD di Desa Cipamingkis|-
+6 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|TBA|-
 22 Agustus 2025|Jawa Barat|Kabupaten Sukabumi|SDN 02 Parakansalak|24 Siswa
 11 September 2025|Jawa Barat|Kabupaten Sukabumi|SMKN 1 Cibadak|69 Siswa
 24 September 2025|Jawa Barat|Kabupaten Sukabumi|SMK Doa Bangsa|32 Siswa
@@ -872,18 +974,29 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Loji|-
 28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Sangrawayang|-
 28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|SDN Cibutun|-
-28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|MA (tidak spesifik)|-
+28 Januari 2026|Jawa Barat|Kabupaten Sukabumi|MA (Spesifik tidak disebutkan|-
+6 Maret 2026|Jawa Barat|Kabupaten Sukabumi|Ponpes Az-Zain|47 Orang
+18 Juni 2026|Jawa Barat|Kabupaten Sukabumi|Satu Keluarga|3 Orang
+28 Juli 2026|Jawa Barat|Kabupaten Sukabumi|SDN Bojong koneng|39 Siswa
 14 Agustus 2025|Jawa Barat|Kabupaten Karawang|TBA|82 Siswa
+17 April 2026|Jawa Barat|Kabupaten Karawang|Balita|46 Warga
+17 April 2026|Jawa Barat|Kabupaten Karawang|Ibu Menyusui|-
 21 Agustus 2025|Jawa Barat|Kabupaten Bandung|SD Negeri Legok Hayam|12 Siswa
 17 September 2025|Jawa Barat|Kabupaten Garut|SDN 2 Mandalasari|657 Siswa
 17 September 2025|Jawa Barat|Kabupaten Garut|SMP Siti Aisyah|-
-17 September 2025|Jawa Barat|Kabupaten Garut|MA Siti Aisyah|-
+17 September 2025|Jawa Barat|Kabupaten Garut|MA (Madrasah Aliyah) Siti Aisyah|-
 17 September 2025|Jawa Barat|Kabupaten Garut|MA Maarif Cilageni|-
 17 September 2025|Jawa Barat|Kabupaten Garut|SMA Siti Aisyah|-
 30 September 2025|Jawa Barat|Kabupaten Garut|SDN 3 Talagasari|307 Siswa
 30 September 2025|Jawa Barat|Kabupaten Garut|SMPN 1 Kadungora|-
 30 September 2025|Jawa Barat|Kabupaten Garut|SMP PGRI Kadungora|-
 30 September 2025|Jawa Barat|Kabupaten Garut|SMA Annisa Kadungora|-
+21 Mei 2026|Jawa Barat|Kabupaten Garut|SD Negeri 2 Hegarsari|57 Siswa
+22 Juli 2026|Jawa Barat|Kabupaten Garut|Ponpes Al Mansuriah|117 Orang
+22 Juli 2026|Jawa Barat|Kabupaten Garut|PAUD Al-Mukhtar|-
+22 Juli 2026|Jawa Barat|Kabupaten Garut|SDN 1 Sindangsuka|-
+22 Juli 2026|Jawa Barat|Kabupaten Garut|SDN 3 Sindangsuka|-
+22 Juli 2026|Jawa Barat|Kabupaten Garut|SDN 5 Sindangsuka|-
 22 September 2025|Jawa Barat|Kabupaten Bandung Barat|SD Negeri Cipari|1.333 Siswa
 22 September 2025|Jawa Barat|Kabupaten Bandung Barat|MTs Darul Fiqri|-
 22 September 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Pembangunan Bandung Barat|-
@@ -901,7 +1014,7 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMKN 1 Cisarua|-
 15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMP Karya Prestasi Mandiri|-
 15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Widya Karya|-
-15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|Pesantren Bani Sulaiman|-
+15 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|pesantren Bani Sulaiman|-
 23 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMPN 1 Lembang|30 Siswa
 28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 1 Cibodas|236 Siswa
 28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SDN 2 Cibodas|-
@@ -910,13 +1023,23 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMPN 4 Lembang|-
 28 Oktober 2025|Jawa Barat|Kabupaten Bandung Barat|SMK Putra Nasional Cibodas|-
 11 November 2025|Jawa Barat|Kabupaten Bandung Barat|SMP Bina Karya|21 Siswa
+10 September 2026|Jawa Barat|Kabupaten Bandung Barat|SDN 2 Cipeundeuy|31 Siswa + 1 Guru
+29 September 2026|Jawa Barat|Kabupaten Bandung Barat|SDN Garuda|10 Siswa
+30 September 2026|Jawa Barat|Kabupaten Bandung Barat|SDN Garuda|8 Siswa
 25 September 2025|Jawa Barat|Kabupaten Subang|SD Rawalele|11 Siswa
+30 September 2026|Jawa Barat|Kabupaten Subang|SDN Cimahi 2|20 Siswa
+30 September 2026|Jawa Barat|Kabupaten Subang|SDN Mulyasari|-
 25 September 2025|Jawa Barat|Kabupaten Sumedang|SMK Win Ujungjaya|164 Siswa
 25 September 2025|Jawa Barat|Kabupaten Sumedang|SMK Rimba Bahari Situraja|-
 25 September 2025|Jawa Barat|Kabupaten Sumedang|SMA Negeri 1 Tomo|-
 26 September 2025|Jawa Barat|Kabupaten Bogor|SMPN 1 Jonggol|4 Siswa
 1 Oktober 2025|Jawa Barat|Kabupaten Bogor|SDN 02 Pasir Angin|3 Siswa
 16 Oktober 2025|Jawa Barat|Kabupaten Bogor|SDN Ciangsana 02 Bogor|7 Siswa
+6 April 2026|Jawa Barat|Kabupaten Bogor|Warga Tanjung Sari|107 Orang
+7 Agustus 2026|Jawa Barat|Kabupaten Bogor|SDN Ciherang 01|33 Siswa
+7 Agustus 2026|Jawa Barat|Kabupaten Bogor|SDN Ciherang 02|-
+7 Agustus 2026|Jawa Barat|Kabupaten Bogor|SDN Ciherang 04|-
+7 Agustus 2026|Jawa Barat|Kabupaten Bogor|SD IT Darul Hijrin|-
 29 September 2025|Jawa Barat|Kabupaten Ciamis|SMPN 4 Pamarican|52 Siswa
 3 Oktober 2025|Jawa Barat|Kabupaten Ciamis|SDN 1 Sindang Sari|10 Siswa
 1 Oktober 2025|Jawa Barat|Kabupaten Pangandaran|MI Attarbiyah Leuwiliang|8 Siswa
@@ -924,13 +1047,34 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 2 Oktober 2025|Jawa Barat|Kota Bekasi|SDN Kota Baru 3 Bekasi|6 Siswa
 22 Oktober 2025|Jawa Barat|Kota Cirebon|SDN Kesenden|13 Siswa
 4 November 2025|Jawa Barat|Kabupaten Cirebon|SDN 2 Setu Wetan|20 Siswa
+10 Maret 2026|Jawa Barat|Kabupaten Cirebon|SMAN 1 Jamblang|1 Siswa
 17 November 2025|Jawa Barat|Kota Sukabumi|MI Al Ihsan|28 Siswa
+14 Agustus 2026|Jawa Barat|Kota Sukabumi|Pondok Pesantren Baiti Jannati|134 Santri
 4 Desember 2025|Jawa Barat|Kabupaten Majalengka|TBA|42 Orang
+29 Mei 2026|Jawa Barat|Kabupaten Majalengka|SMP ( Spesifik tidak disebutkan)|22 Siswa
+29 Mei 2026|Jawa Barat|Kabupaten Majalengka|SMA ( Spesifik tidak disebutkan)|-
+25 Februari 2026|Jawa Barat|Kota Cimahi|TK PGRI|46 Siswa
+25 Februari 2026|Jawa Barat|Kota Cimahi|TK Kartika|-
+25 Februari 2026|Jawa Barat|Kota Cimahi|SDN Cimahi Mandiri 4|-
+25 Februari 2026|Jawa Barat|Kota Cimahi|SDN Karangmekar 5|-
+25 Februari 2026|Jawa Barat|Kota Cimahi|SMPN 6 Cimahi|-
 16 Januari 2025|Jawa Tengah|Kabupaten Sukoharjo|SDN Dukuh 03 Sukoharjo|50 Siswa
 14 April 2025|Jawa Tengah|Kabupaten Batang|SDN 5 Proyonanggan|60 Siswa
 14 April 2025|Jawa Tengah|Kabupaten Batang|TK Islam Al Karomah|3 Siswa
 31 Oktober 2025|Jawa Tengah|Kabupaten Batang|SMK Kandeman|800 Siswa
-24 April 2025|Jawa Tengah|Kabupaten Karanganyar|SD Wonorejo|2 Siswa + 1 Kepala Sekolah
+22 September 2026|Jawa Tengah|Kabupaten Batang|Posyandu wilayah Rowobelang|37 Orang
+22 September 2026|Jawa Tengah|Kabupaten Batang|TK PAUD Al Ikhlas|674 Orang
+22 September 2026|Jawa Tengah|Kabupaten Batang|PAUD Anggrek Mas|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|TP Ananda|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|TK Kuncup Mekar|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|TK Korotayun|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|TK Pertiwi|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|SD Negeri 3 Bawang|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|RA Al Hidayah|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|MTs Sunan Kalijaga|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|MA Sunan Kalijaga|-
+22 September 2026|Jawa Tengah|Kabupaten Batang|MI Salafiyah Pasusukan|-
+24 April 2025|Jawa Tengah|Kabupaten Karanganyar|SD Wonorejo|2 Siswa dan 1 Kepala Sekolah
 3 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TBA|168 Siswa
 9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TK Nglebak 1|105 Siswa
 9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|TK Nglebak 2|-
@@ -938,7 +1082,8 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SDN 3 Ngeblak|-
 9 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMP Negeri 1 Tawangmangu|-
 13 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMPN 1 Colomadu|17 Siswa
-15 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMPN 1 Karanganyar|Ratusan Siswa
+15 Oktober 2025|Jawa Tengah|Kabupaten Karanganyar|SMPN 1 Karanganyar|Ratusan siswa
+12 Agustus 2026|Jawa Tengah|Kabupaten Karanganyar|TBA|1 Orang
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri 3 Gemolong|1 Orang
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri 4 Gemolong|26 Orang
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SD Negeri Gemolong|66 Orang
@@ -946,20 +1091,45 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SMP Negeri 2 Gemolong|61 Orang
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|SMP Negeri 3 Gemolong|1 Orang
 11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|TBA|114 Orang
-10 September 2025|Jawa Tengah|Kabupaten Klaten|Siswa SD (tidak spesifik)|105 Siswa
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|TBA|-
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|TBA|-
+11 Agustus 2025|Jawa Tengah|Kabupaten Sragen|TBA|-
+10 September 2025|Jawa Tengah|Kabupaten Klaten|Siswa SD (Spesifik Tidak Disebutkan)|105 Siswa
 8 Oktober 2025|Jawa Tengah|Kabupaten Klaten|SMPN 1 Wedi|49 Siswa
-11 September 2025|Jawa Tengah|Kabupaten Wonogiri|Madrasah Ibtidaiyah Negeri Wonogiri|23 Siswa
+8 April 2026|Jawa Tengah|Kabupaten Klaten|SMKN 1 Klaten|>10 Siswa
+10 April 2026|Jawa Tengah|Kabupaten Klaten|SMPN 1 Kalikotes|81 Siswa
+28 April 2026|Jawa Tengah|Kabupaten Klaten|SMPN 1 Tulung|584 Siswa dan Guru
+14 Agustus 2026|Jawa Tengah|Kabupaten Klaten|SDIT Muhammadiyah Sinar Fajar|178 Siswa
+3 September 2026|Jawa Tengah|Kabupaten Klaten|MIM Srebegan|313 Siswa
+3 September 2026|Jawa Tengah|Kabupaten Klaten|MIM Cetan|-
+11 September 2025|Jawa Tengah|Kabupaten Wonogiri|Madrasah Ibtidaiyah Negeri (MIN) Wonogiri|23 Siswa
 12 September 2025|Jawa Tengah|Kabupaten Wonogiri|SMAN 2 Wonogiri|110 Siswa
 30 September 2025|Jawa Tengah|Kabupaten Wonogiri|Ponpes Baitul Quran|131 Siswa
-12 Januari 2026|Jawa Tengah|Kabupaten Wonogiri|SMAN 1 Slogohimo|206 Siswa
-22 September 2025|Jawa Tengah|Kota Salatiga|MAN Kota Salatiga|7 Siswa
+30 September 2025|Jawa Tengah|Kabupaten Wonogiri|SMAN 1 Slogohimo|-
+12 Januari 2026|Jawa Tengah|Kabupaten Wonogiri|TBA|206 Siswa
+6 Mei 2026|Jawa Tengah|Kabupaten Wonogiri|SMKN 1 Jatiroto|235 SIswa dan 7 Guru
+11 September 2026|Jawa Tengah|Kabupaten Wonogiri|SMP 1 Bulukerto|155 Siswa
+11 September 2026|Jawa Tengah|Kabupaten Wonogiri|SMP 2 Bulukerto|72 Siswa
+22 September 2025|Jawa Tengah|Kota Salatiga|MAN Kota Salatiga|± 7 siswa
 3 Oktober 2025|Jawa Tengah|Kota Salatiga|SMP Negeri 8 Salatiga|192 Siswa
 6 Oktober 2025|Jawa Tengah|Kota Salatiga|TBA|12 Siswa
 23 September 2025|Jawa Tengah|Kabupaten Jepara|TK Melati Banjaran|35 Siswa
 23 September 2025|Jawa Tengah|Kabupaten Jepara|Kelompok Bermain Darul Karomah Srikandang|-
 23 September 2025|Jawa Tengah|Kabupaten Jepara|MI Matholiul Huda Srikandang|-
 23 September 2025|Jawa Tengah|Kabupaten Jepara|SDN 1 Banjaran|-
+4 Agustus 2026|Jawa Tengah|Kabupaten Jepara|SMPN 2 Jepara|123 Orang
+7 September 2026|Jawa Tengah|Kabupaten Jepara|SDN 1 Srobyong|370 Siswa + 28 Guru
+7 September 2026|Jawa Tengah|Kabupaten Jepara|SMK Nawakartika Sekuro|-
+7 September 2026|Jawa Tengah|Kabupaten Jepara|MA Nawakartika Sekuro|-
+16 September 2026|Jawa Tengah|Kabupaten Jepara|TK Pertiwi|17 Orang
+16 September 2026|Jawa Tengah|Kabupaten Jepara|SD Negeri Karangkebagusan|-
+16 September 2026|Jawa Tengah|Kabupaten Jepara|SD Negeri Kauman|-
 24 September 2025|Jawa Tengah|Kabupaten Rembang|SMPN 1 Kragan|173 Siswa
+21 April 2026|Jawa Tengah|Kabupaten Rembang|SDN Balongmulyo|22 Siswa
+5 Agustus 2026|Jawa Tengah|Kabupaten Rembang|SMPN 5 Rembang|299 Orang
+3 September 2026|Jawa Tengah|Kabupaten Rembang|SMAN 1 Lasem|777 Orang
+8 September 2026|Jawa Tengah|Kabupaten Rembang|MAN 2 Rembang|271 Siswa dan 7 Guru
+24 September 2026|Jawa Tengah|Kabupaten Rembang|SMAN 1 Rembang|107 Siswa dan 8 Guru
 22 September 2025|Jawa Tengah|Kabupaten Banyumas|TK|408 Siswa
 22 September 2025|Jawa Tengah|Kabupaten Banyumas|SDN Kediri|-
 22 September 2025|Jawa Tengah|Kabupaten Banyumas|SDN Pangebatan|-
@@ -967,17 +1137,28 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD 2 Sudagaran|-
 29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD 3 Sudagaran|-
 29 September 2025|Jawa Tengah|Kabupaten Banyumas|SD Muhammadiyah|-
+10 Agustus 2026|Jawa Tengah|Kabupaten Banyumas|MAN 2 Banyumas|165 Siswa
 25 September 2025|Jawa Tengah|Kabupaten Kebumen|SDN Tegalretno|176 Siswa
 25 September 2025|Jawa Tengah|Kabupaten Kebumen|Madrasah Wathoniyah Islamiyah|-
 30 September 2025|Jawa Tengah|Kabupaten Semarang|SDN 01 Ungaran|20 Siswa
 30 September 2025|Jawa Tengah|Kabupaten Temanggung|SMAN 2 Temanggung|414 Siswa
 30 September 2025|Jawa Tengah|Kabupaten Temanggung|SMAN 3 Temanggung|-
+18 Mei 2026|Jawa Tengah|Kabupaten Temanggung|SMP Negeri 4 Temanggung dan 7 Sekolah Lainnya|323 orang
 3 Oktober 2025|Jawa Tengah|Kabupaten Purworejo|SMPN 8 Purworejo|134 Siswa
-3 Oktober 2025|Jawa Tengah|Kabupaten Purworejo|SMAN 3 Purworejo|-
+3 Oktober 2025|Jawa Tengah|Kabupaten Purworejo|SMAN 3 Purworejo.|-
+17 September 2026|Jawa Tengah|Kabupaten Purworejo|TK (spesifik tidak disebutkan)|718 Orang
+17 September 2026|Jawa Tengah|Kabupaten Purworejo|MI ( spesifik tidak disebutkan)|-
+17 September 2026|Jawa Tengah|Kabupaten Purworejo|Lansia + Ibu Hamil|-
+24 September 2026|Jawa Tengah|Kabupaten Purworejo|madrasah ibtidaiyah (MI)|25 Siswa
+24 September 2026|Jawa Tengah|Kabupaten Purworejo|raudhatul athfal (RA)|-
 18 November 2025|Jawa Tengah|Kabupaten Magelang|Pondok Pesatren Nurul Ali|112 Santri
+7 Agustus 2026|Jawa Tengah|Kabupaten Magelang|SMP Negeri 3 Candimulyo|28 Siswa
 26 November 2025|Jawa Tengah|Kabupaten Blora|SMPN 1 Blora|810 Siswa
 26 November 2025|Jawa Tengah|Kabupaten Blora|SMP Katolik Blora|-
 26 November 2025|Jawa Tengah|Kabupaten Blora|SMP Kristen Blora|-
+20 Juli 2026|Jawa Tengah|Kabupaten Blora|SD Negeri Sendangrejo|19 Siswa
+8 September 2026|Jawa Tengah|Kabupaten Blora|SMAN 1 Tunjungan|136 Siswa + 1 Guru
+1 Oktober 2026|Jawa Tengah|Kabupaten Blora|SDN 1 Tutup|13 Siswa
 26 November 2025|Jawa Tengah|Kabupaten Kendal|SMPN 1 Kendal|17 Siswa
 11 Desember 2025|Jawa Tengah|Kabupaten Grobogan|Desa Putatsari|23 Orang
 10 Januari 2026|Jawa Tengah|Kabupaten Grobogan|TK Ngroto|803 Siswa
@@ -989,26 +1170,62 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 30 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN 2 Pulongrambe|8 Siswa
 30 Januari 2026|Jawa Tengah|Kabupaten Grobogan|SDN 3 Mayahan|-
 8 Januari 2026|Jawa Tengah|Kota Semarang|SMKN 11 Semarang|75 Siswa
+31 Juli 2026|Jawa Tengah|Kota Semarang|SMKN 6 Semarang|707 Siswa
 13 Januari 2026|Jawa Tengah|Kabupaten Pekalongan|SDN 01 Kedungwuni|15 Siswa
-22 Januari 2026|Jawa Tengah|Kota Magelang|SMPN 10 Kota Magelang|75 Siswa + 5 Guru
+22 Januari 2026|Jawa Tengah|Kota Magelang|SMPN 10 Kota Magelang|75 Siswa dan 5 Guru
 29 Januari 2026|Jawa Tengah|Kabupaten Kudus|SMAN 2 Kudus|600 Siswa
+6 Februari 2026|Jawa Tengah|Kabupaten Wonosobo|SD Negeri 1 Kapulogo|26 Siswa
 9 Februari 2026|Jawa Tengah|Kabupaten Pati|SMKN 4 Pati|22 Siswa
-17 Juni 2025|DIY|Kabupaten Kulon Progo|TK Aisyiyah Bustanul Athfal Kasatriyan|10 Siswa
+9 September 2026|Jawa Tengah|Kabupaten Pati|SDN 3 Gembong|424 Siswa
+9 September 2026|Jawa Tengah|Kabupaten Pati|MI Miftahul|-
+9 September 2026|Jawa Tengah|Kabupaten Pati|SMPN 1 Gembong|-
+9 September 2026|Jawa Tengah|Kabupaten Pati|MTSN 3 Pati|-
+9 September 2026|Jawa Tengah|Kabupaten Pati|MTs Manbaul Ulum|-
+9 September 2026|Jawa Tengah|Kabupaten Pati|Posyandu Anggrek|-
+18 September 2026|Jawa Tengah|Kabupaten Pati|SDN Maitan 01 Pati|17 Siswa
+30 September 2026|Jawa Tengah|Kabupaten Pati|SDN Tambahmulyo 02|21 Siswa
+23 Februari 2026|Jawa Tengah|Kota Tegal|SMP PIUS|3 Siswa
+12 Maret 2026|Jawa Tengah|Kabupaten Pemalang|TK (Spesifik tidak disebutkan)|1 Siswa
+18 April 2026|Jawa Tengah|Kabupaten Demak|Ponpes Bustanul Qur'an|189 Santri
+18 April 2026|Jawa Tengah|Kabupaten Demak|Ponpes Asnawiyah|-
+18 April 2026|Jawa Tengah|Kabupaten Demak|Ponpes Hidayatul Mubdtadiin|-
+18 April 2026|Jawa Tengah|Kabupaten Demak|Ponpes Al Ma'arif|-
+18 April 2026|Jawa Tengah|Kabupaten Demak|Ponpes Nurul Sakinah|-
+18 April 2026|Jawa Tengah|Kabupaten Demak|MI Yosua|-
+29 April 2026|Jawa Tengah|Kabupaten Cilacap|Ponpes putri Kelurahan Gumilir|>100 Santri
+23 September 2026|Jawa Tengah|Kabupaten Cilacap|SMAN 1 Sampang|361 Siswa
+31 Juli 2026|Jawa Tengah|Kota Surakarta|SDII Al Abidin Solo|108 Siswa
+21 Agustus 2026|Jawa Tengah|Kota Surakarta|SMAN 6 Surakarta|175 Siswa
+Agustus 2026|Jawa Tengah|Kota Surakarta|SMAN 7 Surakarta|Ratusan Siswa
+21 Agustus 2026|Jawa Tengah|Kabupaten Boyolali|SMPN 2 Boyolali|100 Orang
+21 Agustus 2026|Jawa Tengah|Kabupaten Boyolali|SMPN 6 Boyolali|-
+17 Juni 2025|DIY|Kabupaten Kulon Progo|TK Aisyiyah Bustanul Athfal (ABA) Kasatriyan|10 Siswa
 31 Juli 2025|DIY|Kabupaten Kulon Progo|SMPN 2 Wates|497 Siswa
 31 Juli 2025|DIY|Kabupaten Kulon Progo|SMP Muhammadiyah 2 Wates|-
 31 Juli 2025|DIY|Kabupaten Kulon Progo|SD Triharjo|-
 31 Juli 2025|DIY|Kabupaten Kulon Progo|SD Sogan|-
-20 Januari 2025|DIY|Kabupaten Kulon Progo|PAUD (tidak spesifik)|104 Siswa
-20 Januari 2025|DIY|Kabupaten Kulon Progo|TK (tidak spesifik)|-
-20 Januari 2025|DIY|Kabupaten Kulon Progo|SD (tidak spesifik)|-
+20 Januari 2025|DIY|Kabupaten Kulon Progo|PAUD (Spesifik tidak disebutkan)|104 Siswa
+20 Januari 2025|DIY|Kabupaten Kulon Progo|TK (Spesifik tidak disebutkan)|-
+20 Januari 2025|DIY|Kabupaten Kulon Progo|SD (Spesifik tidak disebutkan)|-
+21 Juli 2026|DIY|Kabupaten Kulon Progo|SD (Spesifik tidak disebutkan)|124 Orang
+21 Juli 2026|DIY|Kabupaten Kulon Progo|MI Ma'arif|-
+21 Juli 2026|DIY|Kabupaten Kulon Progo|SMP Negeri 3 Wates|-
+21 Juli 2026|DIY|Kabupaten Kulon Progo|Ibu Menyusui|-
+3 Agustus 2026|DIY|Kabupaten Kulon Progo|SMK Negeri 1 Nanggulan|Ratusan Siswa
+16 September 2026|DIY|Kabupaten Kulon Progo|MTs Ma'arif Jangkaran|29 Siswa
+16 September 2026|DIY|Kabupaten Kulon Progo|SMP Muhammadiyah Temon|-
 13 Agustus 2025|DIY|Kabupaten Sleman|SMP Muhammadiyah 1 Mlati|379 Siswa
 13 Agustus 2025|DIY|Kabupaten Sleman|SMP Muhammadiyah 3 Mlati|-
 13 Agustus 2025|DIY|Kabupaten Sleman|SMP Negeri 3 Mlati|-
 13 Agustus 2025|DIY|Kabupaten Sleman|SMP Pamungkas Mlati|-
-27 Agustus 2025|DIY|Kabupaten Sleman|SMPN 3 Berbah|135 Siswa + 2 Guru
+27 Agustus 2025|DIY|Kabupaten Sleman|SMPN 3 Berbah|135 siswa + 2 guru
 24 Oktober 2025|DIY|Kabupaten Sleman|SD Jombor Lor|300 Siswa
 24 Oktober 2025|DIY|Kabupaten Sleman|SMP Negeri 2 Mlati|-
 24 Oktober 2025|DIY|Kabupaten Sleman|MAN 3 Yogyakarta|-
+3 Agustus 2026|DIY|Kabupaten Sleman|TBA|25 Orang
+7 September 2026|DIY|Kabupaten Sleman|SD Muhammadiyah Balerante|101 Orang
+7 September 2026|DIY|Kabupaten Sleman|SMP Negeri 3 Turi|-
+7 September 2026|DIY|Kabupaten Sleman|SMK Muhammadiyah I Turi|-
 3 September 2025|DIY|Kabupaten Gunungkidul|MTsN Wonosari|5 Siswa
 15 September 2025|DIY|Kabupaten Gunungkidul|SDN Sumberejo|19 Siswa
 15 September 2025|DIY|Kabupaten Gunungkidul|SMPN 2 Semin|-
@@ -1023,15 +1240,30 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMK Ma'Arif|-
 29 Oktober 2025|DIY|Kabupaten Gunungkidul|SMK Muhammadiyah|-
 3 November 2025|DIY|Kabupaten Gunungkidul|TBA|547 Siswa
-23 Januari 2026|DIY|Kabupaten Gunungkidul|SMP Muhammadiyah Playen|48 Siswa + 9 Guru + 1 Kepala Sekolah
+23 Januari 2026|DIY|Kabupaten Gunungkidul|SMP Muhammadiyah Playen|48 Siswa, 9 Guru dan 1 Kepala Sekolah
 15 Oktober 2025|DIY|Kota Yogyakarta|SMAN 1 Yogyakarta|426 Siswa
 15 Oktober 2025|DIY|Kota Yogyakarta|SMA Muhammadiyah 7 Yogyakarta|65 Siswa
+16 September 2026|DIY|Kota Yogyakarta|SMK Negeri 2 Yogyakarta|413 Orang
 31 Oktober 2025|DIY|Kabupaten Bantul|SD 2 Bakulan|237 Siswa
-31 Oktober 2025|DIY|Kabupaten Bantul|SMPN 1 Jetis|-
+31 Oktober 2025|DIY|Kabupaten Bantul|SMPN 1 jetis|-
 31 Oktober 2025|DIY|Kabupaten Bantul|SMPN 3 Jetis|-
 31 Oktober 2025|DIY|Kabupaten Bantul|SMP Muhammadiyah Pulokasang|-
 31 Oktober 2025|DIY|Kabupaten Bantul|SMAN 1 Jetis|-
+2 April 2026|DIY|Kabupaten Bantul|6 SD (Spesifik tidak disebutkan)|156 Siswa
+8 April 2026|DIY|Kabupaten Bantul|SDN Monggang|19 Siswa
+8 April 2026|DIY|Kabupaten Bantul|SD Negeri Kategan|-
+13 April 2026|DIY|Kabupaten Bantul|SMPN 3 Jetis|80 Siswa
+13 April 2026|DIY|Kabupaten Bantul|SMP Muhammadiyah|-
+6 Mei 2026|DIY|Kabupaten Bantul|SDN Kowang|23 Siswa
+4 September 2026|DIY|Kabupaten Bantul|TK KB Mawar Harapan|73 Orang
+4 September 2026|DIY|Kabupaten Bantul|KB Teratai Ceria|-
+4 September 2026|DIY|Kabupaten Bantul|SDN 1 Sumberagung|-
+4 September 2026|DIY|Kabupaten Bantul|SD Patalan|-
+4 September 2026|DIY|Kabupaten Bantul|SD Sawahan|-
+4 September 2026|DIY|Kabupaten Bantul|SD Kembangsongo|-
 2 Oktober 2024|Jawa Timur|Kabupaten Nganjuk|SDN Banaran I|7 Siswa
+7 April 2026|Jawa Timur|Kabupaten Nganjuk|SDN Mojokendil|Puluhan Siswa
+2 September 2026|Jawa Timur|Kabupaten Nganjuk|SMAN 3 Nganjuk|127 Siswa
 4 September 2025|Jawa Timur|Kabupaten Situbondo|SMAN 1 Panji|232 Siswa
 9 September 2025|Jawa Timur|Kabupaten Pamekasan|Lembaga Pendidikan Al-Falah|37 Siswa
 9 September 2025|Jawa Timur|Kabupaten Pamekasan|Lembaga Pendidikan Al-Amin|-
@@ -1045,6 +1277,9 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 2 Oktober 2025|Jawa Timur|Kabupaten Bojonegoro|SD Negeri Tumbrasanom|7 Siswa
 2 Oktober 2025|Jawa Timur|Kabupaten Bojonegoro|MTs Plus Nabawi|6 Siswa
 28 November 2025|Jawa Timur|Kabupaten Bojonegoro|Pondok Pesantren Al Falah|30 Santri
+15 April 2026|Jawa Timur|Kabupaten Bojonegoro|TK (Spesifik tidak disebutkan)|17 Orang
+15 April 2026|Jawa Timur|Kabupaten Bojonegoro|SD (Spesifik tidak disebutkan)|-
+15 April 2026|Jawa Timur|Kabupaten Bojonegoro|Ibu Hamil|-
 24 September 2025|Jawa Timur|Kabupaten Tuban|SMKN 1 Palang|6 Siswa
 14 Oktober 2025|Jawa Timur|Kabupaten Tuban|SMKN Tambakboyo|8 Siswa
 27 Januari 2026|Jawa Timur|Kabupaten Tuban|SMPN 1 Montong|14 Siswa
@@ -1052,25 +1287,35 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 25 September 2025|Jawa Timur|Kota Batu|SMAN 1 Kota Batu|-
 26 September 2025|Jawa Timur|Kabupaten Jember|SDN 05 Sidomekar|16 Siswa
 5 Februari 2026|Jawa Timur|Kabupaten Jember|SMP Negeri 1 Umbulsari|112 Orang
+20 Mei 2026|Jawa Timur|Kabupaten Jember|PAUD Qur’an Raudlatul Tulab|25 Siswa
+20 Mei 2026|Jawa Timur|Kabupaten Jember|TK Al-Hidayah 01|-
+20 Mei 2026|Jawa Timur|Kabupaten Jember|RA Hidayatul Mubtadiin|-
+20 Mei 2026|Jawa Timur|Kabupaten Jember|PAUD Aster 29|-
+20 Mei 2026|Jawa Timur|Kabupaten Jember|TK Kuncup Bunga|-
+15 Juli 2026|Jawa Timur|Kabupaten Jember|TK (Spesifik tidak disebutkan)|29 Siswa
+15 Juli 2026|Jawa Timur|Kabupaten Jember|SDN Karangsono|-
+22 September 2026|Jawa Timur|Kabupaten Jember|Madrasah Ibtidaiyah (MI) Al-Islah|29 Siswa
 1 Oktober 2025|Jawa Timur|Kabupaten Ngawi|SMK Negeri 1 Sine|51 Siswa
 1 Oktober 2025|Jawa Timur|Kabupaten Ngawi|MTs Muhammadiyah Sine|5 Siswa
-26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 2 Jenggrik|87 Siswa
-26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 6 Jenggrik|-
-26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN 5 Gemarang|-
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN Jenggrik 2|87 Siswa
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN Jenggrik 6|-
+26 November 2025|Jawa Timur|Kabupaten Ngawi|SDN Gemarang 5|-
 26 November 2025|Jawa Timur|Kabupaten Ngawi|SMPN 2 Kedunggalar|-
 26 November 2025|Jawa Timur|Kabupaten Ngawi|SMAN 1 Kedunggalar|-
 4 Desember 2025|Jawa Timur|Kabupaten Ngawi|Ponpes Absoru Sunah|220 Siswa
 4 Desember 2025|Jawa Timur|Kabupaten Ngawi|Ponpes Miftahul Janah|-
-4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 2 Mantingan|-
-4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 3 Mantingan|-
-4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN 5 Mantingan|-
-4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SD (tidak spesifik)|-
-13 Februari 2026|Jawa Timur|Kabupaten Ngawi|Ponpes Al Hijrah|67 Santri
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN Mantingan 2|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN Mantingan 3|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SDN Mantingan 5|-
+4 Desember 2025|Jawa Timur|Kabupaten Ngawi|SD (Spesifik tidak disebutkan)|-
+13 Februari 2026|Jawa Timur|Kabupaten Ngawi|Ponpes Al hijrah|67 Santri
 13 Oktober 2025|Jawa Timur|Kabupaten Tulungagung|SDN 1 Tanggung|68 Siswa
 13 Oktober 2025|Jawa Timur|Kabupaten Tulungagung|SMPN 1 Boyolangu|-
 20 Januari 2026|Jawa Timur|Kabupaten Tulungagung|SMKN 3 Boyolangu|123 Siswa
 22 Januari 2026|Jawa Timur|Kabupaten Tulungagung|SMK Sore Tulungagung|15 Siswa
 10 Februari 2026|Jawa Timur|Kabupaten Tulungagung|SDN 3 Bungur|24 Siswa
+27 Juli 2026|Jawa Timur|Kabupaten Tulungagung|Warga (Pelajar, Guru, Balita, Bumil dan Busui)|103 Orang
+16 September 2026|Jawa Timur|Kabupaten Tulungagung|SMKN 1 Boyolangu|200 Siswa
 17 Oktober 2025|Jawa Timur|Kabupaten Magetan|SDN 2 Kediren|12 Siswa
 17 Oktober 2025|Jawa Timur|Kabupaten Magetan|MI Nurul Dholam|-
 23 Oktober 2025|Jawa Timur|Kabupaten Banyuwangi|MAN 1 Banyuwangi|112 Siswa
@@ -1084,42 +1329,113 @@ Tidak Disebutkan|DKI Jakarta|Jakarta Utara|Kelurahan Lagoa|79 Siswa
 27 November 2025|Jawa Timur|Kabupaten Madiun|SDN 2 Kebonagung|-
 3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SDN 1 Sukorejo|77 Siswa
 3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SDN 2 Sukorejo|-
-3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMP (tidak spesifik)|-
-3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMA (tidak spesifik)|-
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMP (Spesifik tidak disebutkan)|-
+3 Desember 2025|Jawa Timur|Kabupaten Bondowoso|SMA (Spesifik tidak disebutkan)|-
 10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|Ponpes An-Nur|780 Siswa
 10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|Ponpes Al-Hidayah|-
 10 Januari 2026|Jawa Timur|Kabupaten Mojokerto|SMPN 2 Kutorejo|-
+9 April 2026|Jawa Timur|Kabupaten Mojokerto|TK Kartika|79 Siswa
+9 April 2026|Jawa Timur|Kabupaten Mojokerto|SDN Randubango|-
+9 April 2026|Jawa Timur|Kabupaten Mojokerto|MI Mi’rojul Ulum|-
+9 April 2026|Jawa Timur|Kabupaten Mojokerto|SMK PGRI Mojosari|-
+9 April 2026|Jawa Timur|Kabupaten Mojokerto|SMA PGRI Mojosari|-
 15 Januari 2026|Jawa Timur|Kota Mojokerto|SDN 5 Wates|TBA
 15 Januari 2026|Jawa Timur|Kota Mojokerto|SDN 6 Wates|-
 15 Januari 2026|Jawa Timur|Kota Mojokerto|SMAN 2 Mojokerto|-
 2 Februari 2026|Jawa Timur|Kota Surabaya|SDN 1 Babat Jerawat|27 Siswa
-Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SD (tidak spesifik)|157 Siswa
-Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SMP (tidak spesifik)|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|TK Ubaid|210 Siswa
+11 Mei 2026|Jawa Timur|Kota Surabaya|TK Aletheia|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Tembok Dukuh 1|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Tembok Dukuh 3|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SDN Tembok Dukuh 4|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Aletheia|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Pancasila 45|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Raden Wijaya|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Ubaid 1|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SD Ubaid 2|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SMP Aletheia|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|SMP Islam|-
+11 Mei 2026|Jawa Timur|Kota Surabaya|RW X Demak Jaya (warga terdampak)|-
+Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SD (Spesifik tidak disebutkan)|157 Siswa
+Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SMP (Spesifik tidak disebutkan)|-
+11 Agustus 2026|Jawa Timur|Kabupaten Trenggalek|SDI Lukman Al Hakim|423 Siswa
+11 Agustus 2026|Jawa Timur|Kabupaten Trenggalek|SMPN 1 Trenggalek|-
+15 September 2026|Jawa Timur|Kabupaten Trenggalek|SMP Global|77 Siswa + Guru
+15 September 2026|Jawa Timur|Kabupaten Trenggalek|MA Global|-
+5 Maret 2026|Jawa Timur|Kabupaten Jombang|Ponpes Sholawat Darut Taubah|31 Santri
+2 September 2026|Jawa Timur|Kabupaten Jombang|SMPN 1 Kabuh|260 Orang
+24 September 2026|Jawa Timur|Kabupaten Jombang|SDN Purisemanding 1|11 Siswa
+9 April 2026|Jawa Timur|Kabupaten Pacitan|TK (Spesifik tidak disebutkan)|158 Siswa
+9 April 2026|Jawa Timur|Kabupaten Pacitan|SD (Spesifik tidak disebutkan)|-
+9 April 2026|Jawa Timur|Kabupaten Pacitan|SMP ((Spesifik tidak disebutkan)|-
+16 April 2026|Jawa Timur|Kota Madiun|SDN 1 Demangan|18 Siswa
+9 September 2026|Jawa Timur|Kota Madiun|SDN 2 Kanigoro|30 Siswa
+20 April 2026|Jawa Timur|Kabupaten Bangkalan|SMPN 1 Blega|2 Siswa dan 1 Guru
+4 Juni 2026|Jawa Timur|Kabupaten Bangkalan|SMAN 1 Kokop|84 Siswa
+22 April 2026|Jawa Timur|Kota Kediri|SDN Ketami 1|73 Siswa
+22 April 2026|Jawa Timur|Kota Kediri|SDN Ketami 2|-
+22 April 2026|Jawa Timur|Kota Kediri|SDN Tempurejo 1|-
+17 September 2026|Jawa Timur|Kota Kediri|SDN Kampung Dalem 3|37 Siswa
+17 September 2026|Jawa Timur|Kota Kediri|SDN Kampung Dalem 4|-
+17 September 2026|Jawa Timur|Kota Kediri|SDN Kaliombo|-
+22 April 2026|Jawa Timur|Kabupaten Sampang|SDN Bira Tengah 1|19 Siswa
+27 April 2026|Jawa Timur|Kabupaten Kediri|TK (Spesifik tidak disebutkan)|6 Siswa
+27 April 2026|Jawa Timur|Kabupaten Kediri|SD (Spesifik tidak disebutkan)|-
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|TK Kusuma Mulya Krandang|211 Orang
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|MI Barokah|-
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|SDN Purwodadi 1|-
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|SDN Krandang 2|-
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|SMPN 1 Kras|-
+23 Juli 2026|Jawa Timur|Kabupaten Kediri|nonsekolah kategori 3B|-
+21 Mei 2026|Jawa Timur|Kabupaten Gresik|SDN 238 Menganti|14 Siswa
+21 Juli 2026|Jawa Timur|Kota Malang|SDN Kauman 1|33 Siswa
+22 Juli 2026|Jawa Timur|Kota Pasuruan|SMAN 1 Pandaan|14 Siswa
+1 September 2026|Jawa Timur|Kabupaten Sidoarjo|Ponpes Manba'ul Hikam|748 Orang
+1 September 2026|Jawa Timur|Kabupaten Sidoarjo|MTS|-
+1 September 2026|Jawa Timur|Kabupaten Sidoarjo|MA|-
+1 September 2026|Jawa Timur|Kabupaten Sidoarjo|16 Lembaga Pendidikan Lainnya|-
+16 September 2026|Jawa Timur|Kota Blitar|SLB Negeri 1 Kota Blitar|22 Siswa
+16 September 2026|Jawa Timur|Kota Blitar|MTs Al Muhafizhoh|-
 23 April 2025|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN Repuk Tunjang|5 Siswa
 17 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN 1 Darmaji|38 Siswa
 17 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|MI Hidayatuslohin|-
+10 April 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|Balita|11 Siswa
+10 April 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SD (Spesifik tidak disebutkan)|-
+11 September 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN 2 Lendang Tampel|352 Siswa
+11 September 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN Repok Puyung|-
+11 September 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN Beber|-
+11 September 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|SDN Mertak Kesambik|-
+11 September 2026|Nusa Tenggara Barat|Kabupaten Lombok Tengah|MTs Qudwatun Hasanah|-
 19 Agustus 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|SMK Karya Adi Husada|Belasan Siswa
 13 Oktober 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|MA Ma'arif Pondok Pesantren Baitul Rahman|51 Santri
 17 Oktober 2025|Nusa Tenggara Barat|Kabupaten Lombok Timur|SMP Islam Terpadu Lukman Hakim Pohgading|23 Siswa
-26 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Timur|TBA|Puluhan Siswa
+26 Januari 2026|Nusa Tenggara Barat|Kabupaten Lombok Timur|TBA|Puluhan siswa
+24 April 2026|Nusa Tenggara Barat|Kabupaten Lombok Timur|MI Yadinu Banok|51 Orang
 3 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|SDN 1 Selat|17 Siswa
 3 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|SDN 2 Nyur Lembang|2 Siswa
-24 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|MTS (tidak spesifik)|26 Santri
-17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MTSN 2 Sumbawa|94 Siswa
-17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|SDN Lamenta|1 Siswa
-17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MIN 3 Sumbwa|20 Siswa
-17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MAN 3 Sumbawa|11 Siswa
+24 September 2025|Nusa Tenggara Barat|Kabupaten Lombok Barat|MTS (Spesifik tidak disebutkan)|26 Santri
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MTSN 2 Sumbawa|94 siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|SDN Lamenta|1 siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MIN 3 Sumbwa|20 siswa
+17 September 2025|Nusa Tenggara Barat|Kabupaten Sumbawa|MAN 3 Sumbawa|11 siswa
 12 Oktober 2025|Nusa Tenggara Barat|Kota Bima|SDN 11 Kota Bima|23 Siswa
 12 Oktober 2025|Nusa Tenggara Barat|Kota Bima|SDN 42 Kota Bima|-
 31 Oktober 2025|Nusa Tenggara Barat|Kabupaten Sumbawa Barat|Pondok Pesantren Himatul Ummah|71 Siswa
 31 Oktober 2025|Nusa Tenggara Barat|Kabupaten Sumbawa Barat|SMPN 4 Brang Rea|-
 11 Februari 2026|Nusa Tenggara Barat|Kabupaten Lombok Utara|SDN 2 Malaka|30 Siswa
 11 Februari 2026|Nusa Tenggara Barat|Kabupaten Lombok Utara|SDN 4 Malaka|-
+4 April 2026|Nusa Tenggara Barat|Kabupaten Bima|PAUD (Spesifik tidak disebutkan)|29 Orang
+4 April 2026|Nusa Tenggara Barat|Kabupaten Bima|TK (Spesifik tidak disebutkan)|-
+4 April 2026|Nusa Tenggara Barat|Kabupaten Bima|SMP (Spesifik tidak disebutkan)|-
+4 April 2026|Nusa Tenggara Barat|Kabupaten Bima|Ibu Hamil|-
+4 April 2026|Nusa Tenggara Barat|Kabupaten Bima|Lansia|-
 18 Februari 2025|Nusa Tenggara Timur|Kabupaten Sumba Timur|SDK Andaluri|29 Siswa
 22 Juli 2025|Nusa Tenggara Timur|Kota Kupang|SMP Negeri 08 Kota Kupang|186 Siswa
 23 Juli 2025|Nusa Tenggara Timur|Kota Kupang|SD Negeri Tenau|13 Siswa
 24 September 2025|Nusa Tenggara Timur|Kota Kupang|SD Inpres Liliba|11 Siswa
 23 Juli 2025|Nusa Tenggara Timur|Kabupaten Kupang|SMA Negeri 1 Taebenu|2 Siswa
+13 Mei 2026|Nusa Tenggara Timur|Kabupaten Kupang|SDN Onitua|23 Siswa
+6 Juni 2026|Nusa Tenggara Timur|Kabupaten Kupang|SDN Tapen|8 Siswa 1 Guru
 23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMAN 1 Kota Tambolaka|58 Siswa
 23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMKN 2 Tambolaka|7 Siswa
 23 Juli 2025|Nusa Tenggara Timur|Kabupaten Sumba Barat Daya|SMK Don Bosco|10 Siswa
@@ -1137,28 +1453,35 @@ Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SMP (tidak spesifik)|-
 3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|Paud Cendana|-
 3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|TK Et Labora|-
 3 Oktober 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|TK Oenasi|-
+29 April 2026|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD GMIT Panite 1|37 Siswa dan 6 Guru
+29 April 2026|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SD Tuapanan|-
+29 April 2026|Nusa Tenggara Timur|Kabupaten Timor Tengah Selatan|SMAN 1 Amanuban|-
 26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SD Trikora|Ratusan Siswa
 26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SD Inpres Waturutu|-
 26 November 2025|Nusa Tenggara Timur|Kabupaten Ngada|SDK Regina Pacis|-
-27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|PAUD Kensulat|12 Siswa
-27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDK Kefamenanu|-
-27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDN Gua Aplasi|-
-27 November 2025|Nusa Tenggara Timur|Kabupaten Timur Tengah Utara|SDK Peboko|-
+3 Maret 2026|Nusa Tenggara Timur|Kabupaten Ngada|Kecamatan Inere|24 Orang
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Utara|PAUD Kensulat|12 Siswa
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Utara|SDK Kefamenanu|-
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Utara|SDN Gua Aplasi|-
+27 November 2025|Nusa Tenggara Timur|Kabupaten Timor Tengah Utara|SDK Peboko|-
+4 Maret 2026|Nusa Tenggara Timur|Kabupaten Timor Tengah Utara|SMAN 1 Insana|>300 Siswa
 29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SDI Golo Welu 2|132 Siswa
 29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SDI Golo Bombong|-
 29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMPN 2 Kuwus|-
 29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMAN 1 Kuwus|-
 29 Januari 2026|Nusa Tenggara Timur|Kabupaten Manggarai Barat|SMKN 1 Kuwus|-
-11 Februari 2026|Nusa Tenggara Timur|Kabupaten Manggarai|Warga Kecamatan Satar Mese|131 Orang
+11 Februari 2026|Nusa Tenggara Timur|Kabupaten Manggarai|warga Kecamatan Satar Mese|131 Orang
+30 April 2026|Nusa Tenggara Timur|Kabupaten Sumba Tengah|TBA|>100 siswa
 7 Oktober 2025|Gorontalo|Kota Gorontalo|SMK Tridarma|11 Siswa
-27 November 2025|Sulawesi Utara|Kabupaten Minahasa Utara|SMPN 2 Airmadidi|182 Siswa
+10 Agustus 2026|Gorontalo|Kabupaten Gorontalo|SDN II Pulubala|Sejumlah siswa
+27 November 2025|Sulawesi Utara|Kabupaten Minahasa Utara|SMPN 2 Airmadidi|182 Siswa dan guru
 26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMP Kristen 1 Woloan|197 Siswa
 26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMK Negeri 1 Tomohon|-
 26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMK Sta. Familia Tomohon|-
 26 Januari 2026|Sulawesi Utara|Kota Tomohon|SMA Karitas Tomohon|-
 24 September 2025|Sulawesi Barat|Kabupaten Mamuju|SDN Taan Galung|25 Siswa
 24 September 2025|Sulawesi Barat|Kabupaten Mamuju|SMP Negeri 1 Tapalang|-
-21 Oktober 2025|Sulawesi Barat|Kabupaten Mamuju|MTS Darus Qur'an Nur Hadis Nahdatul Waton Gentungan|26 Orang
+21 Oktober 2025|Sulawesi Barat|Kabupaten Mamuju|MTS Darus Qur’an Nur Hadis Nahdatul Waton Gentungan|25 Siswa dan 1 Balita
 12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Desa Tubo|61 Warga
 12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Tubo Tengah|-
 12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Tubo Selatan|-
@@ -1167,39 +1490,64 @@ Awal Februari 2026|Jawa Timur|Kabupaten Trenggalek|SMP (tidak spesifik)|-
 12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Bonde-bonde|-
 12 Januari 2026|Sulawesi Barat|Kabupaten Majene|Onang|-
 14 Februari 2026|Sulawesi Barat|Kabupaten Polewali Mandar|SDN 10 Paku|21 Orang
+28 September 2026|Sulawesi Barat|Kabupaten Mamasa|SDN 017 Pepatian|21 Siswa
+28 September 2026|Sulawesi Barat|Kabupaten Mamasa|SMPN 1 Tabulahan|-
+28 September 2026|Sulawesi Barat|Kabupaten Mamasa|SMPN 6 Tabulahan|-
+28 September 2026|Sulawesi Barat|Kabupaten Mamasa|SMKN 1 Tabulahan|-
 27 Agustus 2025|Sulawesi Tengah|Kota Palu|MTs Sis Al-Jufri Tatura|45 Siswa
-27 Agustus 2025|Sulawesi Tengah|Kota Palu|SMK Bina Potensi|100 Siswa
+27 Agustus 2025|Sulawesi Tengah|Kota Palu|SMK Bina Potensi|> 100 Siswa
 16 September 2025|Sulawesi Tengah|Kota Palu|SDN Inpres Boyaoge|6 Siswa
 16 September 2025|Sulawesi Tengah|Kabupaten Parigi Moutong|SDK Toboli Barat|18 Siswa
 25 September 2025|Sulawesi Tengah|Kabupaten Parigi Moutong|SMP Negeri 2 Taopa|27 Siswa
 17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Inpres Tompudau|338 Siswa
 17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Pembina|-
-17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Saiyong|-
-17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|MTS Alkhairat Salakan|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN saiyong|-
+17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|MTS Alkhairat salakan|-
 17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMP Negeri 1 Tinangkung|-
 17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMA Negeri 1 Tinangkung|-
 17 September 2025|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SMK Negeri 1 Tinangkung|-
+2 Maret 2026|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SD Negeri Ambelang|12 Siswa
+2 Maret 2026|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SD Negeri Tompudau|-
+20 Agustus 2026|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Mata|51 Orang
+20 Agustus 2026|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SDN Kanali|-
+20 Agustus 2026|Sulawesi Tengah|Kabupaten Banggai Kepulauan|SD Muhammadiyah Peling|-
 11 Oktober 2025|Sulawesi Tengah|Kabupaten Banggai|SMAN 1 Moilong|123 Siswa
-11 Desember 2025|Sulawesi Tengah|Kabupaten Tojo Una Una|SDN Tampanombo|5 Siswa
+11 Desember 2025|Sulawesi Tengah|Kabupaten Tojo Una-Una|SDN Tampanombo|5 Siswa
 28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|TK Amanah|141 Siswa
 28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 1 Bunobogu|-
 28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 3 Bunobogu|-
 28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SDN 7 Bunobogu|-
 28 Januari 2026|Sulawesi Tengah|Kabupaten Buol|SMPN 5 Bunobogu|-
+29 Juli 2026|Sulawesi Tengah|Kabupaten Buol|SDN 1 Bokat|15 Siswa
+29 Juli 2026|Sulawesi Tengah|Kabupaten Buol|SDN 2 Bokat|-
 26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Kapunrengan|10 Siswa
 26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Bonto Ba'do|1 Siswa
 26 Februari 2025|Sulawesi Selatan|Kabupaten Takalar|SD Lengkese|1 Siswa
+23 September 2026|Sulawesi Selatan|Kabupaten Takalar|UPT SD Negeri 58 Lengkese|4 Guru
 8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SD Negeri 13 Kassiloe|74 Siswa
 8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SMP 5 Labakkang|-
 8 Desember 2025|Sulawesi Selatan|Kabupaten Pangkajene dan Kepulauan|SMA 13 Pangkep Boarding School|-
+29 Januari 2026|Sulawesi Selatan|Kabupaten Pinrang|Pondok Pesantren Al-Mustafa Kanipang|8 Santri
+31 Maret 2026|Sulawesi Selatan|Kabupaten Enrekang|SDN 120 Baroko|17 Siswa
+31 Maret 2026|Sulawesi Selatan|Kabupaten Enrekang|SD 195 Buntu Ampang|-
+1 April 2026|Sulawesi Selatan|Kabupaten Bantaeng|TK (Spesifik tidak disebutkan)|Puluhan Siswa
+1 April 2026|Sulawesi Selatan|Kabupaten Bantaeng|SD (Spesifik tidak disebutkan)|-
+23 April 2026|Sulawesi Selatan|Kabupaten Jeneponto|SDN 7 Rumbia|28 Siswa
+2 September 2026|Sulawesi Selatan|Kabupaten Tana Toraja|SMP Negeri 1 Makale|193 Siswa
+2 September 2026|Sulawesi Selatan|Kabupaten Tana Toraja|SMP Negeri 2 Makale|-
+24 September 2026|Sulawesi Selatan|Kabupaten Gowa|SD Sanging-Sanging|11 Siswa
 23 April 2025|Sulawesi Tenggara|Kabupaten Bombana|SDN 33 Kasipute|13 Siswa
 11 September 2025|Sulawesi Tenggara|Kabupaten Buton|SDN 55 Buton|Puluhan Siswa
 16 September 2025|Sulawesi Tenggara|Kota Baubau|SMAN 7 Baubau|37 Siswa
 16 September 2025|Sulawesi Tenggara|Kota Baubau|SD Hidayatullah|-
-26 September 2025|Sulawesi Tenggara|Kabupaten Konawe|Siswa SDIT|16 Siswa
+26 September 2025|Sulawesi Tenggara|Kabupaten Konawe|siswa SDIT|16 Siswa
 26 September 2025|Sulawesi Tenggara|Kabupaten Konawe|SMKN 1 Unaaha|-
+24 September 2026|Sulawesi Tenggara|Kabupaten Konawe|SMAN 20 Konawe|58 Siswa + 1 Guru
 16 Desember 2025|Sulawesi Tenggara|Kabupaten Buton Tengah|Warga Kec. Mawasangka Tengah|117 Orang
 Januari 2026|Sulawesi Tenggara|Kota Kendari|TBA|66 Anak
+18 September 2026|Sulawesi Tenggara|Kota Kendari|MTS Al-Askar|58 Siswa
+18 September 2026|Sulawesi Tenggara|Kota Kendari|MA Al-Askar|-
+9 Mei 2026|Sulawesi Tenggara|Kabupaten Kolaka|SDN 3 Watubangga|11 Siswa
 22 Juli 2025|Maluku Utara|Kota Ternate|SMKN 5 Kota Ternate|17 Siswa
 6 November 2025|Maluku Utara|Kota Ternate|SDN 65 Kota Ternate|25 Siswa
 6 November 2025|Maluku Utara|Kota Ternate|SD Negeri 56 Jambula|26 Siswa
@@ -1209,16 +1557,25 @@ Januari 2026|Sulawesi Tenggara|Kota Kendari|TBA|66 Anak
 20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|TK Cemara|236 Siswa
 20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|SD Inpres Talaga Ratu|-
 20 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|MIN 2 Seram Bagian Barat|-
-21 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|SMA Negeri 1 Kairatu|-
+21 Oktober 2025|Maluku|Kabupaten Seram Bagian Barat|SMA Negeri 1 kairatu|-
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SD YPK Alfa Omega|86 Siswa
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SDN 29 Raja Ampat|-
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMP YPK Alfa Omega|-
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMPN 14 Raja Ampat|-
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|MTS Language Insan Mandiri|-
 1 Desember 2025|Papua Barat Daya|Kabupaten Raja Ampat|SMK Bukit Zaitun|-
+16 September 2026|Papua Barat Daya|Kota Sorong|SMP Muhammadiyah Al Amin Sorong|33 Siswa dan Guru
 30 Juli 2025|Papua Barat|Kabupaten Manokwari|SD Negeri 45 Arowi|13 Siswa
 30 Juli 2025|Papua Barat|Kabupaten Manokwari|SMP Negeri 13 Manokwari|-
-24 November 2025|Papua Barat|Kabupaten Manokwari|SMAN 2 Manokwari|171 Siswa`;
+24 November 2025|Papua Barat|Kabupaten Manokwari|SMAN 2 Manokwari|171 Siswa
+4 Agustus 2026|Papua|Kabupaten Jayapura|Paud Panumba|543 Orang
+4 Agustus 2026|Papua|Kabupaten Jayapura|SD (Spesifik tidak disebutkan)|-
+4 Agustus 2026|Papua|Kabupaten Jayapura|SMPN 1 Depapre|-
+30 September 2026|Papua|Kabupaten Waropen|SMAN Urfas|1 Siswi
+13 Maret 2026|Papua Tengah|Kabupaten Nabire|TK Grasia|7 Siswa
+13 Maret 2026|Papua Tengah|Kabupaten Nabire|SD Inpres Waharia|-
+13 Maret 2026|Papua Tengah|Kabupaten Nabire|SMPN 7 Nabire|-
+16 April 2026|Papua Tengah|Kabupaten Nabire|SD Inpres Oyehe|7 Siswa`;
 
   const ID_MONTHS = {
     'januari':0,'februari':1,'maret':2,'april':3,'mei':4,'juni':5,
@@ -1293,8 +1650,15 @@ Januari 2026|Sulawesi Tenggara|Kota Kendari|TBA|66 Anak
   E('kProvinces').textContent = provinces.length;
   E('kSchools').textContent   = totalSchools.toLocaleString('id-ID');
 
-  const KERACUNAN_UPDATED = '2 Mei 2026';
+  const KERACUNAN_UPDATED = '7 Oktober 2026';
   E('kUpdated').textContent = KERACUNAN_UPDATED;
+
+  // catatan kecil: angka pada pembaruan sebelumnya vs sekarang
+  const KERACUNAN_PREV = { date: '2 Mei 2026', victims: 27939 };
+  E('kNote').innerHTML =
+    `pembaruan sebelumnya (${KERACUNAN_PREV.date}): ${KERACUNAN_PREV.victims.toLocaleString('id-ID')} korban tercatat` +
+    ` <span class="sep">→</span> kini ${totalVictims.toLocaleString('id-ID')}` +
+    ` <span class="up">(+${(totalVictims - KERACUNAN_PREV.victims).toLocaleString('id-ID')})</span>`;
 
   const filterEl = E('caseFilter');
   provinces.forEach(p => {
